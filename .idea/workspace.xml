@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b8af86b2-dccf-4ffb-a00c-ca2f7f038660" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/api_manager/response.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/handlers/ask_handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configuration/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateways/lang_chain/lang_chain.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateways/open_ia/open_ia.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateways/open_ia/open_ia_exception.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/static/Settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api_manager/response.py" beforeDir="false" afterPath="$PROJECT_DIR$/api_manager/my_response.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/ask_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/ask_handler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +27,17 @@
         <option value="Flask Main" />
         <option value="Python Script" />
       </list>
+    </option>
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
     </option>
   </component>
   <component name="Git.Settings">
@@ -36,7 +53,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Flask server.rag_api_server.executor": "Run",
+    "Flask server.rag_api_server.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "master",
@@ -49,6 +66,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\rodolfo.jesus\Documents\python\rag_api_server\configuration" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="rag_api_server" type="Python.FlaskServer">
       <module name="rag_api_server" />
@@ -83,7 +105,7 @@
       <option name="presentableId" value="Default" />
       <updated>1751283195584</updated>
       <workItem from="1751283196616" duration="150000" />
-      <workItem from="1751283401781" duration="6867000" />
+      <workItem from="1751283401781" duration="16202000" />
     </task>
     <servers />
   </component>
@@ -102,6 +124,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/rag_api_server$rag_api_server.coverage" NAME="rag_api_server Coverage Results" MODIFIED="1751308397359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/rag_api_server$rag_api_server.coverage" NAME="rag_api_server Coverage Results" MODIFIED="1751416006193" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

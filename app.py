@@ -1,11 +1,10 @@
 import json
 
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, Response, jsonify
 from handlers.ask_handler import ask_me_handler
-from api_manager.response import Response
+from api_manager.my_response import MyResponse
 
 app = Flask(__name__)
-
 
 @app.route('/api/v1/home')
 def hello_world():
@@ -14,7 +13,8 @@ def hello_world():
 
 @app.route('/api/v1/askme', methods=['POST'])
 def ask_me():
-    response: Response = ask_me_handler(request)
+    response: MyResponse = ask_me_handler(request)
+    #return Response(response.message),200
     return jsonify(response.to_dict())
 
 
