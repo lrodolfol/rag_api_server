@@ -1,7 +1,6 @@
 import os
 
-import OpenAI
-
+from openai import OpenAI
 from gateways.open_ia.open_ia_exception import OpenIaException
 from static.Settings import Settings
 
@@ -17,7 +16,7 @@ class OpenIaService:
         self.client = OpenAI(api_key=self.api_key)
 
 
-    def generate_embeddings(self, question: str, chunks) -> None: #tipagem do chunks #retorna embeddings com tipagem
+    def generate_embeddings(self, question: str, chunks): #tipagem do chunks #retorna embeddings com tipagem
         if self.has_invalid_properties():
             raise OpenIaException("Invalid properties provided for embeddings generation.")
 
