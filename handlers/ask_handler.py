@@ -1,4 +1,6 @@
 from marshmallow import Schema, fields, ValidationError
+from openai import embeddings
+
 from api_manager.my_response import MyResponse
 from gateways.lang_chain.lang_chain import generate_chunks
 from gateways.open_ia.open_ia import OpenIaService
@@ -18,17 +20,18 @@ askmeSchema = AskmeSchema()
 
 def ask_me_handler(request) -> MyResponse:
     try:
-        question = askmeSchema.load(request.json)
+        question_dic: dict[str] = askmeSchema.load(request.json)
 
-        if not question['question']:
+        if not question_dic['question']:
             return MyResponse(400, "Please provide a question.")
 
+        question: str = question_dic['question']
         chunks = generate_chunks(question)  # colcoar tipagem do chunks
 
         open_ia: OpenIaService = OpenIaService()
-        open_ia.generate_embeddings(question, chunks)
+        embeddings = open_ia.generate_embeddings_question(question)
 
-        return MyResponse(200, "Your question has been received: {}".format(question['question']))
+        return MyResponse(200, "Your question has been received: {}".format(question))
 
     except ValidationError as err:
         return MyResponse(400, err.messages)

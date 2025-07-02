@@ -1,7 +1,10 @@
 import os
 
 from openai import OpenAI
+from openai.types import CreateEmbeddingResponse
+
 from gateways.open_ia.open_ia_exception import OpenIaException
+from static.LogginService import LoggerService
 from static.Settings import Settings
 
 
@@ -15,26 +18,48 @@ class OpenIaService:
         self.input_guide = settings.open_ia["input_guide"]
         self.client = OpenAI(api_key=self.api_key)
 
-
-    def generate_embeddings(self, question: str, chunks): #tipagem do chunks #retorna embeddings com tipagem
-        if self.has_invalid_properties():
-            raise OpenIaException("Invalid properties provided for embeddings generation.")
-
-
-        embeddings = [] #colocar tipagem
-        for chunk in chunks:
-            resposta = self.client.embeddings.create(
-                input=chunk,
-                model=self.model_embeddings
-            )
-            vetor = resposta.data[0].embedding #tipagem do vetor
-            embeddings.append({"texto": chunk, "vetor": vetor})
-
-        return embeddings
+        self.logger = LoggerService("MainApp")
 
 
     def has_invalid_properties(self) -> bool:
         if self.api_key is None or self.model_embeddings is None or self.model_chat is None:
-            return False
+            self.logger.error("OpenIA properties are invalid")
+            return True
 
-        return True
+        return False
+
+
+    def generate_embeddings_question(self, question: str):
+        if self.has_invalid_properties():
+            return
+
+        response: CreateEmbeddingResponse = self.client.embeddings.create(
+            input=question,
+            model=self.model_embeddings
+        )
+
+        return response.data[0].embedding
+
+
+    def generate_embeddings_chunks(self, lista_chunks: list[str]) -> list[dict]:
+        embeddings: list = []
+
+        if self.has_invalid_properties():
+            return embeddings
+
+        for chunk in lista_chunks:
+            vector: list[float] = self.generate_vector_from_chunks(chunk)
+            embeddings.append({"texto": chunk, "vetor": vector})
+
+        return embeddings
+
+
+    def generate_vector_from_chunks(self, chunk) -> list[float]:
+        response: CreateEmbeddingResponse = self.client.embeddings.create(
+            input=chunk,
+            model=self.model_embeddings
+        )
+
+        vector: list[float] = response.data[0].embedding
+
+        return vector
