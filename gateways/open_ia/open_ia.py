@@ -15,10 +15,10 @@ class OpenIaService:
         self.api_key = os.getenv("OPEN_IA_API_KEY")
         self.model_embeddings = settings.open_ia["model_embeddings"]
         self.model_chat = settings.open_ia["model_chat"]
-        self.input_guide = settings.open_ia["input_guide"]
+        self.input_guide: str = settings.open_ia["input_guide"]
         self.client = OpenAI(api_key=self.api_key)
 
-        self.logger = LoggerService("MainApp")
+        self.logger = LoggerService("OpenIAService", "INFO")
 
 
     def has_invalid_properties(self) -> bool:
@@ -38,7 +38,7 @@ class OpenIaService:
             model=self.model_embeddings
         )
 
-        return response.data[0].embedding
+        return response.data[0].embedding #oq ele retorna?
 
 
     def generate_embeddings_chunks(self, lista_chunks: list[str]) -> list[dict]:
@@ -49,7 +49,7 @@ class OpenIaService:
 
         for chunk in lista_chunks:
             vector: list[float] = self.generate_vector_from_chunks(chunk)
-            embeddings.append({"texto": chunk, "vetor": vector})
+            embeddings.append({"text": chunk, "vector": vector})
 
         return embeddings
 
@@ -63,3 +63,21 @@ class OpenIaService:
         vector: list[float] = response.data[0].embedding
 
         return vector
+
+
+    def make_question(self, question: str, phrases: list) -> str:
+        if self.has_invalid_properties():
+            return ""
+
+        client_response = self.client.responses.create(
+            model=self.model_chat,
+            input=[
+                {"role": "system", "content": self.input_guide},
+                {"role": "user", "content": f"Pergunta: {question}\nTrechos: {phrases}"}
+            ]
+        )
+
+        if not client_response:
+            raise OpenIaException("No choices returned from OpenAI API")
+
+        return client_response.output_text
