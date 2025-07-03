@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, ValidationError
 from openai import embeddings
+from pinecone.core.openapi.db_data.model.query_response import QueryResponse
 
 from api_manager.my_response import MyResponse
 from gateways.lang_chain.lang_chain import generate_chunks
@@ -38,20 +39,20 @@ def ask_me_handler(request) -> MyResponse:
         # =processo para salvar arquivo fonte=
         # ====================================
         # le o arquivo fonte
-        file: str = read_file()
-        if not file:
-            return MyResponse(500, "Error reading file. File not found or empty.")
-
-        # gera os chunks do arquivo com langchain
-        file_chunks: list[str] = generate_chunks(file)
-        if not file_chunks:
-            return MyResponse(500, "Error generating chunks from the file.")
-
-        # gera embeddings dos chunks do arquivo com open_ia
-        file_embeddings:list = open_ia.generate_embeddings_chunks(file_chunks)
-
-        #salva os embeddings no pinecone
-        pinecone.save(file_embeddings)
+        # file: str = read_file()
+        # if not file:
+        #     return MyResponse(500, "Error reading file. File not found or empty.")
+        #
+        # # gera os chunks do arquivo com langchain
+        # file_chunks: list[str] = generate_chunks(file)
+        # if not file_chunks:
+        #     return MyResponse(500, "Error generating chunks from the file.")
+        #
+        # # gera embeddings dos chunks do arquivo com open_ia
+        # file_embeddings:list = open_ia.generate_embeddings_chunks(file_chunks)
+        #
+        # #salva os embeddings no pinecone
+        # pinecone.save(file_embeddings)
 
 
 
@@ -60,13 +61,13 @@ def ask_me_handler(request) -> MyResponse:
         # = processo gerar a pergunta ========
         # ====================================
         # faço embeddings da pergunta com open_ia
-        question_embeddings:list = open_ia.generate_embeddings_question(question) #tipagem do embeddings
+        question_embeddings: list[float] = open_ia.generate_embeddings_question(question) #tipagem do embeddings
 
         # consultar pinecone
         get_from_pinecone = pinecone.get(question_embeddings)
 
         # gerar a pergunta com open_ia
-        response = open_ia.make_question(question, get_from_pinecone["matches"])
+        response: str = open_ia.make_question(question, get_from_pinecone["matches"])
 
         return MyResponse(200, format(response))
 

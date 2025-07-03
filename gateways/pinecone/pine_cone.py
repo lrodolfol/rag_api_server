@@ -1,6 +1,7 @@
 import os
 
 from pinecone import Pinecone as Pinecone_lib, ServerlessSpec
+from pinecone.core.grpc.protos.db_data_2025_04_pb2 import QueryResponse
 
 from static.LogginService import LoggerService
 from static.Settings import Settings
@@ -46,9 +47,9 @@ class PineCone:
             return
 
 
-    def get(self, embedding, top_k=5):
+    def get(self, embedding, top_k=5) -> QueryResponse | None:
         if self.has_invalid_properties():
-            return []
+            return None
 
         try:
             self.create_index_if_not_exists()

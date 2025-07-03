@@ -29,9 +29,9 @@ class OpenIaService:
         return False
 
 
-    def generate_embeddings_question(self, question: str):
+    def generate_embeddings_question(self, question: str) ->list[float]:
         if self.has_invalid_properties():
-            return
+            return[]
 
         response: CreateEmbeddingResponse = self.client.embeddings.create(
             input=question,
