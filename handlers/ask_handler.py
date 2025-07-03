@@ -19,7 +19,7 @@ def read_file() -> str:
 
 def file_source_updated():
     try:
-        with open(f"./files_source/file_updated.txt", 'w', encoding='utf-8') as file:
+        with open("./files_source/file_updated.txt", 'w', encoding='utf-8') as file:
             lines = file.readlines()
             last_line = lines[-1] if lines else ''
 
@@ -33,6 +33,8 @@ class AskMeHandler:
     def __init__(self):
         self.pinecone: PineCone = PineCone()
         self.open_ia: OpenIaService = OpenIaService()
+        self.file_updated_path = './files_source/file_updated.txt'
+
 
     def ask_me_handler(self, request) -> MyResponse:
         try:
@@ -68,3 +70,9 @@ class AskMeHandler:
 
         # salva os embeddings no pinecone
         self.pinecone.save(file_embeddings)
+
+        try:
+            with open(self.file_updated_path, 'w') as f:
+                f.write("N")
+        except Exception as e:
+            self.logger.error(f"Error updating file_updated.txt: {e}")
