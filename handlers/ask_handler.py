@@ -1,10 +1,4 @@
-import hashlib
-import json
-
 from marshmallow import Schema, fields, ValidationError
-from openai import embeddings
-from pinecone.core.openapi.db_data.model.query_response import QueryResponse
-
 from api_manager.my_response import MyResponse
 from gateways.lang_chain.lang_chain import generate_chunks
 from gateways.open_ia.open_ia import OpenIaService
@@ -23,6 +17,18 @@ def read_file() -> str:
         return str(e)
 
 
+def file_source_updated():
+    try:
+        with open(f"./files_source/file_updated.txt", 'w', encoding='utf-8') as file:
+            lines = file.readlines()
+            last_line = lines[-1] if lines else ''
+
+            if last_line == '' or last_line == 'S':
+                return True
+    except Exception:
+        return False
+
+
 class AskMeHandler:
     def __init__(self):
         self.pinecone: PineCone = PineCone()
@@ -30,12 +36,13 @@ class AskMeHandler:
 
     def ask_me_handler(self, request) -> MyResponse:
         try:
-            question: dict[str] = request.json['question']
+            question: str = request.json['question']
 
-            self.save_file_on_pinecone()
+            if file_source_updated():
+                self.save_file_source_on_pinecone()
 
             # faço embeddings da pergunta com open_ia
-            question_embeddings: list[float] = self.open_ia.generate_embeddings_question(question)  # tipagem do embeddings
+            question_embeddings: list[float] = self.open_ia.generate_embeddings_question(question)
 
             # consultar pinecone
             get_from_pinecone = self.pinecone.get(question_embeddings)
@@ -50,8 +57,7 @@ class AskMeHandler:
         except Exception as e:
             return MyResponse(500, str(e))
 
-
-    def save_file_on_pinecone(self) -> None:
+    def save_file_source_on_pinecone(self) -> None:
         file: str = read_file()
 
         # gera os chunks do arquivo com langchain
