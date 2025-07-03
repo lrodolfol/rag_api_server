@@ -7,10 +7,11 @@
   },
   "pinecone": {
     "api_key": "get from environment",
-    "index_name": "knowledge-base",
+    "index_name": "index-services",
     "region": "us-east-1",
     "environment": "development",
     "metric": "cosine",
-    "vector_type": "dense"
+    "vector_type": "dense",
+    "dimension": 1536
   }
 }
