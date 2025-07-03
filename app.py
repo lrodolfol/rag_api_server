@@ -15,7 +15,7 @@ def hello_world():
 def ask_me():
     response: MyResponse = ask_me_handler(request)
     #return Response(response.message),200
-    return jsonify(response.to_dict())
+    return jsonify(response.to_dict()), response.code
 
 
 if __name__ == '__main__':
