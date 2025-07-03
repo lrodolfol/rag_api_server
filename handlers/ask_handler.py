@@ -1,3 +1,6 @@
+import hashlib
+import json
+
 from marshmallow import Schema, fields, ValidationError
 from openai import embeddings
 from pinecone.core.openapi.db_data.model.query_response import QueryResponse
@@ -32,6 +35,7 @@ class AskMeHandler:
 
             # ====================================
             # =processo para salvar arquivo fonte=
+            # =ter alguma forma de avisar que o arquivo foi modificado=
             # ====================================
             # le o arquivo fonte
             file: str = read_file()
@@ -70,5 +74,3 @@ class AskMeHandler:
             return MyResponse(400, err.messages)
         except Exception as e:
             return MyResponse(500, str(e))
-
-
