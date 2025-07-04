@@ -85,7 +85,3 @@ Estacionamento: Sim
 Horário de funcionamento: Segunda a sexta, das 8h às 18h  
 Formas de pagamento: Dinheiro, cartão, convênios e Pix  
 Delivery: Não
----
-
-# ti nos negocios
-empresa prestadora de serviviços de tecnologia. Situada na rua jose simeao dutra, 646 - nossa senhora de loures em são lourenço / MG. Chefiada pelo Rodolfo Jesus. entre em contato pelo e-mail: contato@tinosnegocios.com.br ou pelo telefone: 35998509829

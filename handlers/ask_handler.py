@@ -19,11 +19,11 @@ def read_file() -> str:
 
 def file_source_updated():
     try:
-        with open("./files_source/file_updated.txt", 'w', encoding='utf-8') as file:
-            lines = file.readlines()
+        with open("./files_source/file_updated.txt", 'r', encoding='utf-8') as file:
+            lines = file.read()
             last_line = lines[-1] if lines else ''
 
-            if last_line == '' or last_line == 'S':
+            if last_line == 'S'.upper():
                 return True
     except Exception:
         return False

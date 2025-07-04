@@ -23,7 +23,9 @@ def ask_me():
 @app.route('/api/v1/services', methods=['POST'])
 def services():
     file_source_handler = FileSourceHandler()
-    file_source_handler.read_request_to_save(request)
+    response: MyResponse = file_source_handler.read_request_to_save(request)
+
+    return jsonify(response.to_dict()), response.code
 
 
 if __name__ == '__main__':
