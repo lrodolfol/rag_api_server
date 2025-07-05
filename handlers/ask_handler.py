@@ -61,9 +61,11 @@ class AskMeHandler:
 
             return MyResponse(200, format(f"Ola {user_name}\n{response}"))
 
-        except ValidationError as err:
-            return MyResponse(400, err.messages)
+        except ValidationError as e:
+            self.logger.error(f"Error validating request: {e.messages}")
+            return MyResponse(400, e.messages)
         except Exception as e:
+            self.logger.error(f"Error validating request: {e.messages}")
             return MyResponse(500, str(e))
 
     def save_file_source_on_pinecone(self) -> None:
