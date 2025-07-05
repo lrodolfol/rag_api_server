@@ -43,7 +43,7 @@ class AskMeHandler:
             self.logger.info(f"Received question: {request.json}")
 
             question: str = request.json['text']
-            user_name: str = request.json['sender_name']
+            user_name: str = request.json['senderName']
             user_phone: str = request.json['waId']
             user_email: str = request.json['operatorEmail']
 
