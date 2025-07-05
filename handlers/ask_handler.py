@@ -3,6 +3,7 @@ from api_manager.my_response import MyResponse
 from gateways.lang_chain.lang_chain import generate_chunks
 from gateways.open_ia.open_ia import OpenIaService
 from gateways.pinecone.pine_cone import PineCone
+from static.LogginService import LoggerService
 
 file_name: str = 'services.md'
 
@@ -34,11 +35,14 @@ class AskMeHandler:
         self.pinecone: PineCone = PineCone()
         self.open_ia: OpenIaService = OpenIaService()
         self.file_updated_path = './files_source/file_updated.txt'
+        self.logger = LoggerService("AskmeHandler", "INFO")
 
 
     def ask_me_handler(self, request) -> MyResponse:
         try:
             question: str = request.json['question']
+
+            self.logger.info(f"Received question: {request.json}")
 
             if file_source_updated():
                 self.save_file_source_on_pinecone()
