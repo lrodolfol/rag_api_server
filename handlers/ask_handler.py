@@ -40,9 +40,9 @@ class AskMeHandler:
 
     def ask_me_handler(self, request) -> MyResponse:
         try:
-            question: str = request.json['question']
-
             self.logger.info(f"Received question: {request.json}")
+            
+            question: str = request.json['question']
 
             if file_source_updated():
                 self.save_file_source_on_pinecone()
