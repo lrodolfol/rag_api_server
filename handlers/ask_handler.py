@@ -41,8 +41,11 @@ class AskMeHandler:
     def ask_me_handler(self, request) -> MyResponse:
         try:
             self.logger.info(f"Received question: {request.json}")
-            
-            question: str = request.json['question']
+
+            question: str = request.json['text']
+            user_name: str = request.json['sender_name']
+            user_phone: str = request.json['waId']
+            user_email: str = request.json['operatorEmail']
 
             if file_source_updated():
                 self.save_file_source_on_pinecone()
@@ -56,7 +59,7 @@ class AskMeHandler:
             # gerar a pergunta com open_ia
             response: str = self.open_ia.make_question(question, get_from_pinecone["matches"])
 
-            return MyResponse(200, format(response))
+            return MyResponse(200, format(f"Ola {user_name}\n{response}"))
 
         except ValidationError as err:
             return MyResponse(400, err.messages)
