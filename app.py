@@ -1,8 +1,6 @@
-import datetime
-import json
 import os
 
-from flask import Flask, request, Response, jsonify
+from flask import Flask
 from flask_cors import CORS
 
 from handlers.ask_handler import AskMeHandler
