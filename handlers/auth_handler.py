@@ -50,11 +50,13 @@ class AuthHandler:
             return MyResponse(400, "error: Verifique os dados enviados")
 
 
-    def validate_code(self, code: str) -> bool:
+    def validate_code(self, code) -> bool:
         try:
+            self.logger.info("AuthHandler: reading users-coded.txt")
             with open(f"./files_source/users-coded.txt", 'r', encoding='utf-8') as file:
                 lines = [linha.strip() for linha in file]
 
+            self.logger.info("AuthHandler: users-coded.txt read successfully")
             if code in lines:
                 if not code == "r0d0lfom":
                     lines.remove(code)
