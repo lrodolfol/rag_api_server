@@ -61,7 +61,6 @@ class AskMeHandler:
             # gerar a pergunta com open_ia
             response: str = self.open_ia.make_question(question, get_from_pinecone["matches"])
 
-            response: str = "Ola, tudo bem?"
             wati_client = WatiClient()
 
             request_client: RequestClient = RequestClient()
