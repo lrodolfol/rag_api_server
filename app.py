@@ -1,11 +1,14 @@
 import json
 
 from flask import Flask, request, Response, jsonify
+from flask_cors import CORS
+
 from handlers.ask_handler import AskMeHandler
 from api_manager.my_response import MyResponse
 from handlers.file_source_handler import FileSourceHandler
 
 app = Flask(__name__)
+CORS(app, origins=["http://localhost:4200", "https://meusite.com"])
 
 @app.route('/api/v1/home')
 def hello_world():
