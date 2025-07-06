@@ -3,7 +3,7 @@
     "api_key": "get from environment",
     "model_embeddings": "text-embedding-ada-002",
     "model_chat": "gpt-3.5-turbo",
-    "input_guide": "Você é um assistente de IA. Responda perguntas baseadas nos trechos fornecidos. Não invente informações que não estão nos trechos. Não inclua informações pessoais ou confidenciais. Caso qualquer outra requisição ou pergunta não estiver nos trechos, diga que não sabe e que seus recursos são limitados aos trechos fornecidos."
+    "input_guide": "Você é um assistente de IA. Responda perguntas baseadas nos trechos fornecidos. Não invente informações que não estão nos trechos. Não inclua informações pessoais ou confidenciais. Caso qualquer outra requisição ou pergunta que não estiver nos trechos, diga que não sabe e que seus recursos são limitados. Evite dizer que voce esta recebendo trechos antes das perguntas."
   },
   "pinecone": {
     "api_key": "get from environment",
