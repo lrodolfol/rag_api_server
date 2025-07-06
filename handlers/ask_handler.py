@@ -1,8 +1,10 @@
 from marshmallow import Schema, fields, ValidationError
 from api_manager.my_response import MyResponse
+from gateways.RequestClient import RequestClient
 from gateways.lang_chain.lang_chain import generate_chunks
 from gateways.open_ia.open_ia import OpenIaService
 from gateways.pinecone.pine_cone import PineCone
+from models.WatiClient import WatiClient
 from static.LogginService import LoggerService
 
 file_name: str = 'services.md'
@@ -59,7 +61,13 @@ class AskMeHandler:
             # gerar a pergunta com open_ia
             response: str = self.open_ia.make_question(question, get_from_pinecone["matches"])
 
-            return MyResponse(200, format(f"Ola {user_name}\n{response}"))
+            response: str = "Ola, tudo bem?"
+            wati_client = WatiClient()
+
+            request_client: RequestClient = RequestClient()
+            request_client.send_request(wati_client, user_phone, f"{user_name},\n{response}")
+
+            return MyResponse(200, format(f"{user_name}\n\n{response}"))
 
         except ValidationError as e:
             self.logger.error(f"Error validating request: {e.messages}")
