@@ -13,5 +13,10 @@
     "metric": "cosine",
     "vector_type": "dense",
     "dimension": 1536
+  },
+  "wati": {
+    "base_url": "https://live-mt-server.wati.io/",
+    "client_id": "464472",
+    "path_url": "/api/v1/sendSessionMessage/"
   }
 }
