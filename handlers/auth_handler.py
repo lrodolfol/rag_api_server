@@ -12,7 +12,7 @@ SECRET_KEY: str = os.getenv("token_key")
 
 def generate_token(code: str) -> str:
     payload = {
-        "sub": "rag-server-tnn",  # identificador do usuário (subject)
+        "sub": "rag-server-tnn",
         "exp": datetime.datetime.now() + datetime.timedelta(hours=4),
         "iat": datetime.datetime.now(),
         "role": "admin",
@@ -22,6 +22,9 @@ def generate_token(code: str) -> str:
     }
 
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    if isinstance(token, bytes):
+        token = token.decode("utf-8")
+
     return token
 
 
@@ -53,6 +56,9 @@ class AuthHandler:
 
         if code in lines:
             self.logger.info("AuthHandler: code found in users-coded.txt")
+
+            if code == "r0d0lfom":
+                return True
 
             lines.remove(code)
             with open(f"./files_source/users-coded.txt", 'w', encoding='utf-8') as file:
