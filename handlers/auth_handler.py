@@ -25,27 +25,6 @@ def generate_token(code: str) -> str:
     return token
 
 
-def validate_code(code: str) -> bool:
-    try:
-        with open(f"./files_source/users-coded.txt", 'r', encoding='utf-8') as file:
-            lines = [linha.strip() for linha in file]
-
-        if code in lines:
-            if not code == "r0d0lfom":
-                lines.remove(code)
-
-                with open(f"./files_source/users-coded.txt", 'w', encoding='utf-8') as file:
-                    for line in lines:
-                        file.write(f"{line}\n")
-
-            return True
-        else:
-            return False
-
-    except Exception as e:
-        return False
-
-
 class AuthHandler:
     def __init__(self):
         self.logger = LoggerService("AuthHandler", "INFO")
@@ -60,7 +39,7 @@ class AuthHandler:
 
             self.logger.info(f"AuthHandler: Received code: {code}")
 
-            if not validate_code(code):
+            if not self.validate_code(code):
                 return MyResponse(400, "error: Invalid code")
 
             token: str = generate_token(code)
@@ -69,3 +48,25 @@ class AuthHandler:
         except Exception as e:
             self.logger.error(f"Error in auth method: {str(e)}")
             return MyResponse(400, "error: Verifique os dados enviados")
+
+
+    def validate_code(self, code: str) -> bool:
+        try:
+            with open(f"./files_source/users-coded.txt", 'r', encoding='utf-8') as file:
+                lines = [linha.strip() for linha in file]
+
+            if code in lines:
+                if not code == "r0d0lfom":
+                    lines.remove(code)
+
+                    with open(f"./files_source/users-coded.txt", 'w', encoding='utf-8') as file:
+                        for line in lines:
+                            file.write(f"{line}\n")
+
+                return True
+            else:
+                return False
+
+        except Exception as e:
+            self.logger.error(f"Error in validate_code method: {str(e)}")
+            return False
