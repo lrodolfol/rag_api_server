@@ -7,7 +7,7 @@ import jwt
 from api_manager.my_response import MyResponse
 from static.LogginService import LoggerService
 
-SECRET_KEY: str = os.getenv("token_key")
+SECRET_KEY: str = os.getenv("TOKEN_KEY")
 
 
 def generate_token(code: str) -> str:
