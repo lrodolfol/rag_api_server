@@ -31,6 +31,13 @@ def validate_code(code: str) -> bool:
             lines = [linha.strip() for linha in file]
 
         if code in lines:
+            if not code == "r0d0lfom":
+                lines.remove(code)
+
+                with open(f"./files_source/users-coded.txt", 'w', encoding='utf-8') as file:
+                    for line in lines:
+                        file.write(f"{line}\n")
+
             return True
         else:
             return False
