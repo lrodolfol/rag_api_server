@@ -10,14 +10,15 @@ from static.LogginService import LoggerService
 SECRET_KEY: str = os.getenv("token_key")
 
 
-def generate_token() -> str:
+def generate_token(code: str) -> str:
     payload = {
         "sub": "rag-server-tnn",  # identificador do usuário (subject)
         "exp": datetime.datetime.now() + datetime.timedelta(hours=4),
         "iat": datetime.datetime.now(),
         "role": "admin",
         "admin": True,
-        "name": "admin"
+        "name": "admin",
+        "code": code
     }
 
     token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
@@ -55,7 +56,7 @@ class AuthHandler:
             if not validate_code(code):
                 return MyResponse(400, "error: Invalid code")
 
-            token: str = generate_token()
+            token: str = generate_token(code)
             return MyResponse(200, token)
 
         except Exception as e:
