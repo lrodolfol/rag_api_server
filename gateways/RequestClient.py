@@ -1,6 +1,6 @@
 import requests
 
-from models.WatiClient import WatiClient
+from models import WatiClient
 from static.LogginService import LoggerService
 
 
