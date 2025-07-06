@@ -68,7 +68,7 @@ def services():
     return jsonify(response.to_dict()), response.code
 
 
-@app.route('/api/v1/validate-key', methods=['GET'])
+@app.route('/api/v1/validate-key', methods=['POST'])
 def validate_key():
     auth_handler: AuthHandler = AuthHandler()
     response: MyResponse = auth_handler.auth(request)
