@@ -56,17 +56,13 @@ class AuthHandler:
             with open(f"./files_source/users-coded.txt", 'r', encoding='utf-8') as file:
                 lines = [linha.strip() for linha in file]
 
-            for line in lines:
-                self.logger.info(f"AuthHandler: Read line: {line}")
-
-            self.logger.info("AuthHandler: users-coded.txt read successfully")
             if code in lines:
-                if not code == "r0d0lfom":
-                    lines.remove(code)
+                self.logger.info("AuthHandler: code found in users-coded.txt")
 
-                    with open(f"./files_source/users-coded.txt", 'w', encoding='utf-8') as file:
-                        for line in lines:
-                            file.write(f"{line}\n")
+                lines.remove(code)
+                with open(f"./files_source/users-coded.txt", 'w', encoding='utf-8') as file:
+                    for line in lines:
+                        file.write(f"{line}\n")
 
                 return True
             else:
