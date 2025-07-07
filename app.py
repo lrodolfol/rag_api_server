@@ -11,7 +11,7 @@ from handlers.file_source_handler import FileSourceHandler
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:4200", "https://meusite.com"])
-SECRET_KEY: str = os.getenv("token_key")
+SECRET_KEY: str = os.getenv("TOKEN_KEY")
 
 
 import jwt
