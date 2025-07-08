@@ -10,7 +10,7 @@ from handlers.file_source_handler import FileSourceHandler
 
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:4200", "https://meusite.com"])
+CORS(app, origins=["http://localhost:4200", "http://127.0.0.1:5500", "https://tinosnegocios.com.br"])
 SECRET_KEY: str = os.getenv("TOKEN_KEY")
 
 
