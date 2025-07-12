@@ -16,6 +16,10 @@ class FileSourceHandler:
                 file.write(f"# {service.service_name}\n")
                 file.write(f"{service.description}\n")
 
+
+                # aqui que eu devo gravar dados no pinecone!
+                # nao precisa gravar no arquivo de texto
+
             with open(self.file_updated_path, 'w') as file:
                 file.write("S")
         except Exception as e:
