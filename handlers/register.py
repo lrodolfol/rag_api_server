@@ -1,37 +1,54 @@
 import hashlib
 import hmac
 import os
+import psycopg2
+from psycopg2.errorcodes import UNIQUE_VIOLATION
+
+#from sqlalchemy.dialects.postgresql import psycopg2
 
 from api_manager.my_response import MyResponse
+from static.LogginService import LoggerService
 
 
-def load_data(request) -> [str]:
-    data: [str] = []
-
-    data["user_name"] = request.json['user_name']
-    data["company_name"] = request.json['company_name']
-    data["email"] = request.json['email']
-    data["phone"] = request.json['phone']
+def load_data(request) -> dict[str, str]:
+    data: dict[str, str] = {
+        "user_name": request.json.get("name"),
+        "company_name": request.json.get("company"),
+        "email": request.json.get("email"),
+        "phone": request.json.get("phone")
+    }
 
     return data
 
 
+DB_CONFIG = {
+    'dbname': 'tinosnegocios',
+    'user': 'postgres',
+    'password': '1q2w3e4r@#$',
+    'host': 'localhost',
+    'port': 5432
+}
+
+
 class Register:
     def __init__(self):
-        self.key_code_access = os.getenv("KEY_CODE_ACCESS")
+        self.key_code_access = os.getenv("KEY_CODE_ACCESS").encode()
+        self.logger = LoggerService("Register", "INFO")
+        self.msg_error = ''
+
 
     def register_user(self, request) -> MyResponse:
         try:
-            data: [str] = load_data(request)
-
+            data: dict[str, str] = load_data(request)
             code = self.generate_code_access(data)
 
-            #gravar no banco de dados
-
-            return MyResponse(201, code)
+            if self.add(data, code):
+                return MyResponse(201, code)
+            else:
+                return MyResponse(500, f"Erro ao registrar usuário. {self.msg_error}")
 
         except Exception as e:
-            return MyResponse(400,f"Dados inválidos")
+            return MyResponse(400, f"Dados inválidos")
 
 
     def generate_code_access(self, data) -> str:
@@ -40,3 +57,30 @@ class Register:
         code = hmac_hash[:8].upper()
 
         return code
+
+
+    def _connect(self):
+        return psycopg2.connect(**DB_CONFIG)
+
+
+    def add(self, data: dict[str, str], code: str) -> bool:
+        try:
+            with Register._connect(self) as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        "INSERT INTO ragweb.clients (name, company, email, phone, code) VALUES (%s, %s, %s, %s, %s) RETURNING id",
+                        (data['user_name'], data['company_name'], data['email'].strip().replace(" ", ""), data['phone'].strip().replace(" ", ""), code)
+                    )
+                    self.id = cur.fetchone()[0]
+                conn.commit()
+
+                self.logger.info(f"Client {self.id} added successfully.")
+                return True
+        except psycopg2.IntegrityError as e:
+            self.logger.error(f"Integrity error: {e}")
+            self.msg_error = "Cliente já existe"
+            conn.rollback()
+        except Exception as e:
+            self.logger.error(f"Error adding client: {e}")
+            conn.rollback()
+            return False

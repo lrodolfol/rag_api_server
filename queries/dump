@@ -1,0 +1,11 @@
+CREATE TABLE "rag-web".clients (
+	id integer NOT NULL,
+	"name" varchar NOT NULL,
+	company varchar NULL,
+	email varchar NOT NULL,
+	phone varchar NOT NULL,
+	CONSTRAINT clients_pk PRIMARY KEY (id),
+	CONSTRAINT clients_unique UNIQUE (email),
+	CONSTRAINT clients_unique_1 UNIQUE (phone)
+);
+COMMENT ON TABLE "rag-web".clients IS 'clientes donas de negocio';

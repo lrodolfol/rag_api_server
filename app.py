@@ -106,5 +106,14 @@ def send_email():
         return jsonify({ "error": str(e) }), 500
 
 
+@app.route('/api/v1/register', methods=['POST'])
+def register():
+    from handlers.register import Register
+    register_handler: Register = Register()
+    response: MyResponse = register_handler.register_user(request)
+
+    return jsonify(response.to_dict()), response.code
+
+
 if __name__ == '__main__':
     app.run()
