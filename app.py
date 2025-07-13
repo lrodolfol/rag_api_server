@@ -1,7 +1,7 @@
 import os
 import smtplib
 
-from flask import Flask
+from flask import Flask, g
 from flask_cors import CORS
 
 from handlers.ask_handler import AskMeHandler
@@ -10,10 +10,9 @@ from handlers.auth_handler import AuthHandler
 from handlers.file_source_handler import FileSourceHandler
 from email.message import EmailMessage
 
+
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:4200", "http://127.0.0.1:5500", "https://tinosnegocios.com.br"])
-SECRET_KEY: str = os.getenv("TOKEN_KEY")
-EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
 
 import jwt
 from flask import request, jsonify
@@ -32,8 +31,9 @@ def token_required(f):
             return jsonify({'error': 'Missing token'}), 401
 
         try:
+            SECRET_KEY: str = os.getenv("TOKEN_KEY")
             payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            # você pode acessar o payload aqui se quiser
+            g.user_code = payload.get('code')
             request.jwt_payload = payload
         except jwt.ExpiredSignatureError:
             return jsonify({'error': 'Expired token'}), 401
@@ -64,7 +64,7 @@ def services():
     if not auth_header:
         return jsonify({"error": "Missing authorization header"}), 401
     file_source_handler = FileSourceHandler()
-    response: MyResponse = file_source_handler.read_request_to_save(request)
+    response: MyResponse = file_source_handler.read_request_to_save(request, g.user_code)
 
     return jsonify(response.to_dict()), response.code
 
@@ -98,6 +98,7 @@ def send_email():
         email.set_content(message)
 
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            EMAIL_PASSWORD: str = os.getenv("EMAIL_PASSWORD")
             smtp.login(to, EMAIL_PASSWORD)
             smtp.send_message(email)
 

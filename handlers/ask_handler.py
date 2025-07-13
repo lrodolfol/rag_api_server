@@ -10,16 +10,6 @@ from static.LogginService import LoggerService
 file_name: str = 'services.md'
 
 
-def read_file() -> str:
-    try:
-        with open(f"./files_source/{file_name}", 'r', encoding='utf-8') as file:
-            return file.read()
-    except FileNotFoundError:
-        return ""
-    except Exception as e:
-        return str(e)
-
-
 def file_source_updated():
     try:
         with open("./files_source/file_updated.txt", 'r', encoding='utf-8') as file:
@@ -49,8 +39,8 @@ class AskMeHandler:
             user_phone: str = request.json['waId']
             user_email: str = request.json['operatorEmail']
 
-            if file_source_updated():
-                self.save_file_source_on_pinecone()
+            # if file_source_updated():
+            #     self.save_file_source_on_pinecone()
 
             # faço embeddings da pergunta com open_ia
             question_embeddings: list[float] = self.open_ia.generate_embeddings_question(question)
@@ -74,21 +64,3 @@ class AskMeHandler:
         except Exception as e:
             self.logger.error(f"Error validating request: {e.messages}")
             return MyResponse(500, str(e))
-
-    def save_file_source_on_pinecone(self) -> None:
-        file: str = read_file()
-
-        # gera os chunks do arquivo com langchain
-        file_chunks: list[str] = generate_chunks(file)
-
-        # gera embeddings dos chunks do arquivo com open_ia
-        file_embeddings: list = self.open_ia.generate_embeddings_chunks(file_chunks)
-
-        # salva os embeddings no pinecone
-        self.pinecone.save(file_embeddings)
-
-        try:
-            with open(self.file_updated_path, 'w') as f:
-                f.write("N")
-        except Exception as e:
-            self.logger.error(f"Error updating file_updated.txt: {e}")

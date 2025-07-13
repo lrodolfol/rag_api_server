@@ -59,10 +59,6 @@ class Register:
         return code
 
 
-    def _connect(self):
-        return psycopg2.connect(**DB_CONFIG)
-
-
     def add(self, data: dict[str, str], code: str) -> bool:
         try:
             with Register._connect(self) as conn:
@@ -84,3 +80,7 @@ class Register:
             self.logger.error(f"Error adding client: {e}")
             conn.rollback()
             return False
+
+
+    def _connect(self):
+        return psycopg2.connect(**DB_CONFIG)
