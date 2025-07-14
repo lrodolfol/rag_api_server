@@ -4,3 +4,7 @@
 .env
 
 *.pyc
+
+configuration/config.dev.json
+
+configuration/config.prod.json
