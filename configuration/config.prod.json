@@ -1,0 +1,29 @@
+{
+  "open_ai": {
+    "api_key": "get from environment",
+    "model_embeddings": "text-embedding-ada-002",
+    "model_chat": "gpt-3.5-turbo",
+    "input_guide": "Você é um assistente de IA. Responda perguntas baseadas nos trechos fornecidos. Não invente informações que não estão nos trechos. Caso exista qualquer outra requisição ou pergunta que não estiver nos trechos, diga que não sabe e que seus recursos são limitados. Não diga que voce esta recebendo trechos antes das perguntas. Se alguem quiser cadastrar uma empresa na aplicação ou saber mais detalhes do projeto, diga para entrar em contato no e-mail: contato@tinosnegocios.com.br. Se existir mais de uma resposta para pergunta e se essa resposta está nos trechos iniciais, pode inclui-las nas respostas."
+  },
+  "pinecone": {
+    "api_key": "get from environment",
+    "index_name": "index-services",
+    "region": "us-east-1",
+    "environment": "development",
+    "metric": "cosine",
+    "vector_type": "dense",
+    "dimension": 1536
+  },
+  "wati": {
+    "base_url": "https://live-mt-server.wati.io/",
+    "client_id": "464472",
+    "path_url": "/api/v1/sendSessionMessage/"
+  },
+  "database": {
+    "host": "get from environment",
+    "port": "25060",
+    "database": "defaultdb",
+    "user": "doadmin",
+    "password": "get from environment"
+  }
+}
