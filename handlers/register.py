@@ -2,9 +2,6 @@ import hashlib
 import hmac
 import os
 import psycopg2
-from psycopg2.errorcodes import UNIQUE_VIOLATION
-
-#from sqlalchemy.dialects.postgresql import psycopg2
 
 from api_manager.my_response import MyResponse
 from static.LogginService import LoggerService
