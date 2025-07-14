@@ -39,9 +39,6 @@ class AskMeHandler:
             user_phone: str = request.json['waId']
             user_email: str = request.json['operatorEmail']
 
-            # if file_source_updated():
-            #     self.save_file_source_on_pinecone()
-
             # faço embeddings da pergunta com open_ia
             question_embeddings: list[float] = self.open_ia.generate_embeddings_question(question)
 

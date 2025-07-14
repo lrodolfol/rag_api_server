@@ -1,17 +1,22 @@
 import json
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 class Settings:
     _instance = None
 
     def __new__(cls):
         if cls._instance is None:
-            with open("configuration/config.json") as file:
+            environment = os.getenv("ENVIRONMENT", "development").lower()
+            with open(f"configuration/config.{environment}.json") as file:
                 data = json.load(file)
+
             cls._instance = super(Settings, cls).__new__(cls)
             cls._instance._open_ia = data["open_ai"]
             cls._instance._pinecone = data["pinecone"]
             cls._instance._wati = data["wati"]
+            cls._instance._database = data["database"]
 
         return cls._instance
 
@@ -26,3 +31,7 @@ class Settings:
     @property
     def wati(self):
         return self._wati.copy()
+
+    @property
+    def database(self):
+        return self._database.copy()

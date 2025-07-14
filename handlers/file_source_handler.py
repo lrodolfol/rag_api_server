@@ -34,21 +34,6 @@ class FileSourceHandler:
         self.logger = LoggerService("OpenIAService", "INFO")
 
 
-    def append_to_file(self, service: Service) -> None:
-        try:
-            with open(self.file_path, 'a', encoding='utf-8') as file:
-                file.write("---\n\n")
-                file.write(f"# {service.service_name}\n")
-                file.write(f"{service.description}\n")
-
-                self.save_file_source_on_pinecone()
-
-            with open(self.file_updated_path, 'w') as file:
-                file.write("S")
-        except Exception as e:
-            self.logger.error(f"Error appending to file: {e}")
-
-
     def read_request_to_save(self, request, user_code: str) -> MyResponse:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
@@ -66,6 +51,18 @@ class FileSourceHandler:
             )
 
 
+    def append_to_file(self, service: Service) -> None:
+        try:
+            with open(self.file_path, 'a', encoding='utf-8') as file:
+                file.write("---\n\n")
+                file.write(f"# {service.service_name}\n")
+                file.write(f"{service.description}\n")
+
+                self.save_file_source_on_pinecone()
+        except Exception as e:
+            self.logger.error(f"Error appending to file: {e}")
+
+
     def save_file_source_on_pinecone(self) -> None:
         file: str = read_file()
 
@@ -77,12 +74,6 @@ class FileSourceHandler:
 
         # salva os embeddings no pinecone
         self.pinecone.save(file_embeddings)
-
-        try:
-            with open(self.file_updated_path, 'w') as f:
-                f.write("N")
-        except Exception as e:
-            self.logger.error(f"Error updating file_updated.txt: {e}")
 
 
     def update_user_code(cls, user_code):

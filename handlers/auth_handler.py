@@ -1,21 +1,14 @@
 import datetime
 import os
-from logging import Logger
-
 import jwt
 import psycopg2
 
 from api_manager.my_response import MyResponse
 from static.LogginService import LoggerService
+from static.Settings import Settings
+from static.load_data_base import Load_Data_Base_Info
 
-
-DB_CONFIG = {
-    'dbname': 'tinosnegocios',
-    'user': 'postgres',
-    'password': '1q2w3e4r@#$',
-    'host': 'localhost',
-    'port': 5432
-}
+DB_CONFIG = Load_Data_Base_Info()
 
 
 class AuthHandler:
