@@ -20,19 +20,3 @@ Wi-Fi: Sim
 Estacionamento: Sim
 Pastores: Pr Sergio e Pr. Joselita
 Inauguração: 30/06/1992
----
-
-# fghfghgfhfg
-hgfhfghgfhgfhgfhgfhgh  fdsfsd sdf sdf dsf sdf 
----
-
-# sdfsdfsd
-fsdfsdfsdfsdfsdf
----
-
-# sdfsdfsd
-fsdfsdfsdfsdfsdf
----
-
-# sdfsdfsd
-fsdfsdfsdfsdfsdf
