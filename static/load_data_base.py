@@ -9,7 +9,7 @@ def Load_Data_Base_Info() -> dict[str, str]:
         'user': '',
         'password': '',
         'host': '',
-        'port': 5432
+        'port': 0
     }
     settings: Settings = Settings()
 

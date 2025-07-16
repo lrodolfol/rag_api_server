@@ -5,14 +5,9 @@ from gateways.lang_chain.lang_chain import generate_chunks
 from api_manager.my_response import MyResponse
 from models.Service import Service
 from static.LogginService import LoggerService
+from static.load_data_base import Load_Data_Base_Info
 
-DB_CONFIG = {
-    'dbname': 'tinosnegocios',
-    'user': 'postgres',
-    'password': '1q2w3e4r@#$',
-    'host': 'localhost',
-    'port': 5432
-}
+DB_CONFIG = Load_Data_Base_Info()
 
 file_name: str = 'services.md'
 def read_file() -> str:

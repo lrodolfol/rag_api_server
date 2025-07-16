@@ -5,6 +5,7 @@ import psycopg2
 
 from api_manager.my_response import MyResponse
 from static.LogginService import LoggerService
+from static.load_data_base import Load_Data_Base_Info
 
 
 def load_data(request) -> dict[str, str]:
@@ -18,13 +19,7 @@ def load_data(request) -> dict[str, str]:
     return data
 
 
-DB_CONFIG = {
-    'dbname': 'tinosnegocios',
-    'user': 'postgres',
-    'password': '1q2w3e4r@#$',
-    'host': 'localhost',
-    'port': 5432
-}
+DB_CONFIG = Load_Data_Base_Info()
 
 
 class Register:
