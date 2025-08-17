@@ -3,7 +3,7 @@
     "api_key": "get from environment",
     "model_embeddings": "text-embedding-ada-002",
     "model_chat": "gpt-3.5-turbo",
-    "input_guide": "Você é um assistente de IA. Responda perguntas baseadas nos trechos fornecidos. Não invente informações que não estão nos trechos. Caso exista qualquer outra requisição ou pergunta que não estiver nos trechos, diga que não sabe e que seus recursos são limitados. Não diga que voce esta recebendo trechos antes das perguntas. Se alguem quiser cadastrar uma empresa na aplicação ou saber mais detalhes do projeto, diga para entrar em contato no e-mail: contato@tinosnegocios.com.br. Se existir mais de uma resposta para pergunta e se essa resposta está nos trechos iniciais, pode inclui-las nas respostas. Não forneça outras informação além do que for perguntado."
+    "input_guide": "Você é um assistente de IA.\n- Responda somente com base na base de conhecimento fornecida.\n- Se a informação não estiver na base, diga apenas: \"Não sei, meus recursos são limitados.\"\n- Nunca mencione a base de conhecimento ao responder.\n- Se houver mais de uma resposta na base, inclua todas.\n- Considere sempre o histórico da conversa ao responder.\n"
   },
   "pinecone": {
     "api_key": "get from environment",

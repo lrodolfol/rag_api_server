@@ -4,6 +4,7 @@ from gateways.RequestClient import RequestClient
 from gateways.lang_chain.lang_chain import generate_chunks
 from gateways.open_ia.open_ia import OpenIaService
 from gateways.pinecone.pine_cone import PineCone
+from models.PayloadQuestionOpenIA import PayloadQuestionOpenIA, ChatMessage
 from models.WatiClient import WatiClient
 from static.LogginService import LoggerService
 
@@ -22,6 +23,24 @@ def file_source_updated():
         return False
 
 
+def model_chat_historic(histotic: list[dict]) -> list[ChatMessage]:
+    chat_historic: list[ChatMessage] = []
+
+    if histotic is None or len(histotic) == 0:
+        return chat_historic
+
+    for message in histotic:
+        chat_message: ChatMessage = ChatMessage(
+            id=message['id'],
+            text=message['text'],
+            is_user=message['isUser'],
+            timestamp=message['timestamp']
+        )
+        chat_historic.append(chat_message)
+
+    return chat_historic
+
+
 class AskMeHandler:
     def __init__(self):
         self.pinecone: PineCone = PineCone()
@@ -35,15 +54,18 @@ class AskMeHandler:
             self.logger.info(f"Received question: {request.json}")
 
             question: str = request.json['text']
+            chat_historic: list[ChatMessage] = model_chat_historic(request.json['historic'])
+
+            payload_openIA: PayloadQuestionOpenIA = PayloadQuestionOpenIA(question, chat_historic)
 
             # faço embeddings da pergunta com open_ia
             question_embeddings: list[float] = self.open_ia.generate_embeddings_question(question)
 
-            # consultar pinecone
+            # consultar pinecone (acho que o pinecone só deve ser chamado em uma nova conversação)
             get_from_pinecone = self.pinecone.get(question_embeddings)
 
             # gerar a pergunta com open_ia
-            response: str = self.open_ia.make_question(question, get_from_pinecone["matches"])
+            response: str = self.open_ia.make_question(payload_openIA, get_from_pinecone["matches"])
 
             return MyResponse(200, format(f"{response}"))
 
