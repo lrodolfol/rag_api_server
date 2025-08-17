@@ -30,6 +30,31 @@ class AskMeHandler:
         self.logger = LoggerService("AskmeHandler", "INFO")
 
 
+    def ask_me_handler_chat_online(self, request) -> MyResponse:
+        try:
+            self.logger.info(f"Received question: {request.json}")
+
+            question: str = request.json['text']
+
+            # faço embeddings da pergunta com open_ia
+            question_embeddings: list[float] = self.open_ia.generate_embeddings_question(question)
+
+            # consultar pinecone
+            get_from_pinecone = self.pinecone.get(question_embeddings)
+
+            # gerar a pergunta com open_ia
+            response: str = self.open_ia.make_question(question, get_from_pinecone["matches"])
+
+            return MyResponse(200, format(f"{response}"))
+
+        except ValidationError as e:
+            self.logger.error(f"Error validating request: {e.messages}")
+            return MyResponse(400, e.messages)
+        except Exception as e:
+            self.logger.error(f"Error validating request: {e.messages}")
+            return MyResponse(500, str(e))
+
+
     def ask_me_handler(self, request) -> MyResponse:
         try:
             self.logger.info(f"Received question: {request.json}")

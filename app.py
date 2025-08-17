@@ -50,9 +50,17 @@ def hello_world():
 
 
 @app.route('/api/v1/askme', methods=['POST'])
-def ask_me():
+def ask_me_chat_online():
     ask_me_handler = AskMeHandler()
     response: MyResponse = ask_me_handler.ask_me_handler(request)
+    #return Response(response.message),200
+    return jsonify(response.to_dict()), response.code
+
+
+@app.route('/api/v1/askme-chat-online', methods=['POST'])
+def ask_me():
+    ask_me_handler = AskMeHandler()
+    response: MyResponse = ask_me_handler.ask_me_handler_chat_online(request)
     #return Response(response.message),200
     return jsonify(response.to_dict()), response.code
 
