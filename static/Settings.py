@@ -8,7 +8,7 @@ class Settings:
 
     def __new__(cls):
         if cls._instance is None:
-            environment = os.getenv("ENVIRONMENT", "development").lower()
+            environment = os.getenv("ENVIRONMENT", "dev").lower()
             with open(f"configuration/config.{environment}.json") as file:
                 data = json.load(file)
 
