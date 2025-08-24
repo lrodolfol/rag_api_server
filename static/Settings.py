@@ -17,6 +17,7 @@ class Settings:
             cls._instance._pinecone = data["pinecone"]
             cls._instance._wati = data["wati"]
             cls._instance._database = data["database"]
+            cls._instance._redis = data["redis"]
 
         return cls._instance
 
@@ -35,3 +36,7 @@ class Settings:
     @property
     def database(self):
         return self._database.copy()
+
+    @property
+    def redis(self):
+        return self._redis.copy()

@@ -9,3 +9,6 @@ class ChatLogsBase(ABC):
     def get_chat_historic(self, phone_number: str) -> list:
         pass
 
+    @abstractmethod
+    def clear_chat_historic(self, phone_number: str) -> bool:
+        pass

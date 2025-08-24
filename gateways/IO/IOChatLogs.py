@@ -1,10 +1,13 @@
 import json
+
+from gateways.contracts.ChatLogsBase import ChatLogsBase
 from static.LogginService import LoggerService
 
 
-class IOCChatLogs:
+class IOCChatLogs(ChatLogsBase):
     def __init__(self):
         self.logger = LoggerService("IOChatLogs", "INFO")
+        self.log_dir = "./files_source/chat_historic/"
 
 
     def set_message_to_chat_historic(self, phone_number: str, value: str, is_user: bool) -> bool:
@@ -13,7 +16,10 @@ class IOCChatLogs:
                 "is_user": is_user,
                 "text": value
             }
-            self.client.rpush(phone_number, json.dumps(content,ensure_ascii=False))
+            log_path = f"{self.log_dir}{phone_number}.log"
+
+            with open(log_path, "a+", encoding="utf-8") as log_file:
+                log_file.write(json.dumps(content) + "\n")
             return True
         except Exception as e:
             self.logger.error(f"Error setting key {phone_number} in Redis: {str(e)}")
@@ -22,8 +28,16 @@ class IOCChatLogs:
 
     def get_chat_historic(self, phone_number: str) -> list:
         try:
-            messages = self.client.lrange(phone_number, 0, -1)
-            return [json.loads(message) for message in messages]
+            log_path = f"{self.log_dir}{phone_number}.log"
+            messages = []
+            with open(log_path, "a+", encoding="utf-8") as log_file:
+                for line in log_file:
+                    messages.append(json.loads(line.strip()))
+            return messages
         except Exception as e:
-            self.logger.error(f"Error getting key {phone_number} from Redis: {str(e)}")
+            self.logger.error(f"Error getting chat historic for {phone_number}: {str(e)}")
             return []
+
+
+    def clear_chat_historic(self, phone_number: str) -> bool:
+        pass

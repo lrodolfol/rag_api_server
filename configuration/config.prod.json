@@ -3,11 +3,11 @@
     "api_key": "get from environment",
     "model_embeddings": "text-embedding-ada-002",
     "model_chat": "gpt-3.5-turbo",
-    "input_guide": "Você é um assistente de IA.\n- Responda somente com base na base de conhecimento fornecida.\n- Se a informação não estiver na base, diga apenas: \"Não sei, meus recursos são limitados.\"\n- Nunca mencione a base de conhecimento ao responder.\n- Se houver mais de uma resposta na base, inclua todas.\n- Considere sempre o histórico da conversa ao responder.\n"
+        "input_guide": "Você é um assistente de IA.\n- Responda somente com base na base de conhecimento fornecida.\n- Se a informação não estiver na base, diga apenas: \"Não sei, meus recursos são limitados.\"\n- Nunca mencione a base de conhecimento ao responder.\n- Se houver mais de uma resposta na base, inclua todas.\n- Considere sempre o histórico da conversa ao responder.\n- Se tiver palavras de baixo calão ou ofensas, não responda"
   },
   "pinecone": {
     "api_key": "get from environment",
-    "index_name": "index-services",
+    "index_name": "index-services-PROD",
     "region": "us-east-1",
     "environment": "development",
     "metric": "cosine",
@@ -24,6 +24,12 @@
     "port": "25060",
     "database": "defaultdb",
     "user": "doadmin",
+    "password": "get from environment"
+  },
+  "redis": {
+    "host": "localhost",
+    "port": "6379",
+    "db": 0,
     "password": "get from environment"
   }
 }

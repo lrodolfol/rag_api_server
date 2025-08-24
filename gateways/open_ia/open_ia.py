@@ -81,16 +81,16 @@ class OpenIaService:
         return vector
 
 
-    def make_question(self, payload_openIA: PayloadQuestionOpenIA, phrases: list) -> str:
-        if self.has_invalid_properties() or payload_openIA.is_invalid():
+    def make_question(self, payload_open_ia: PayloadQuestionOpenIA, phrases: list) -> str:
+        if self.has_invalid_properties() or payload_open_ia.is_invalid():
             return ""
 
-        historic = model_historic(payload_openIA)
+        historic = model_historic(payload_open_ia)
 
         client_payload = [
                 {"role": "system", "content": self.input_guide},
                 *historic,
-                {"role": "user", "content": f"Pergunta: {payload_openIA.question}" },
+                {"role": "user", "content": f"Pergunta: {payload_open_ia.question}"},
                 {"role": "system", "content": f"Trechos: {phrases}"}
             ]
         client_response = self.client.responses.create(
