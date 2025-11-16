@@ -14,6 +14,8 @@ class PayloadQuestionOpenIA:
 
 
 class ChatMessage:
-    def __init__(self, text: str, is_user: bool):
+    def __init__(self, id: int, text: str, is_user: bool, timestamp: str):
+        self.id = id
         self.text = text
         self.is_user = is_user
+        self.timestamp = timestamp
