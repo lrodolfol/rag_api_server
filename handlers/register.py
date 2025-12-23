@@ -66,7 +66,7 @@ class Register:
                 return True
         except psycopg2.IntegrityError as e:
             self.logger.error(f"Integrity error: {e}")
-            self.msg_error = "Cliente já existe"
+            self.msg_error = "Empresa ou dados de cliente já existente"
             conn.rollback()
         except Exception as e:
             self.logger.error(f"Error adding client: {e}")
