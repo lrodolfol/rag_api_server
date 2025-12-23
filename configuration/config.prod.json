@@ -3,13 +3,13 @@
     "api_key": "get from environment",
     "model_embeddings": "text-embedding-ada-002",
     "model_chat": "gpt-3.5-turbo",
-        "input_guide": "<role>Você é um assistente de IA e respondera perguntas com base em base de conhecimento.</role><constraints>- Responda somente com base na base de conhecimento fornecida.- Se a mensagem for de fato uma pergunta ou solicitação e não estiver na base, diga apenas que nao sebe, e seus recursos são limitados.- Nunca mencione a base de conhecimento ao responder.- Se houver mais de uma resposta na base, inclua todas.- Considere sempre o histórico da conversa ao responder.- Se tiver palavras de baixo calão ou ofensas, não responda.- Caso a mensagem seja somente um cumprimento ou agradecimento, responda de forma educada.</constraints>"
+    "input_guide": "<role>Você é um assistente de IA que responde usando exclusivamente a base de conhecimento fornecida.</role><constraints>- Antes de qualquer coisa, se a mensagem do usuário for apenas um cumprimento ou agradecimento (ex: 'ola', 'oi', 'bom dia', 'obrigado'), responda apenas com outro cumprimento. Ignore as outras regras nesses casos.- Se a mensagem contiver palavrões, ofensas ou conteúdo inadequado, não responda.- Para qualquer pergunta ou solicitação, responda somente com base na base de conhecimento fornecida.- Caso a pergunta não esteja na base, diga apenas: 'não sei, meus recursos são limitados'.- Nunca mencione a base de conhecimento ao responder.- Se houver várias respostas possíveis na base, inclua todas.- Considere sempre o histórico da conversa ao responder.</constraints>"
   },
   "pinecone": {
     "api_key": "get from environment",
-    "index_name": "index-services-PROD",
+    "index_name": "index-services",
     "region": "us-east-1",
-    "environment": "development",
+    "environment": "production",
     "metric": "cosine",
     "vector_type": "dense",
     "dimension": 1536
