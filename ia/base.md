@@ -1,3 +1,5 @@
+## Visão Geral
+
 Esse é um projeto backend que atende um sistema de RAG (Retrieval-Augmented Generation).
 O projeto é basicamente uma API que recebe request HTTP para processamento. O arquivo ./app.py é o ponto de entrada da aplicação, onde as rotas são definidas e o servidor é iniciado.
 
@@ -24,7 +26,8 @@ O projeto é basicamente uma API que recebe request HTTP para processamento. O a
 - 'api/v1/register'
   - metodo POST que recebe um json com os dados do usuario para cadastro no sistema
 
-# Funcionalidade do RAG
+## Funcionalidades Principais
+
 O usuário do sistema pode fazer perguntas e o sistema responde com base em um conjunto de documentos fornecidos.
 A base de conhecimento é composta por documentos que são processados e armazenados em um vetor de embeddings para facilitar a recuperação rápida de informações relevantes.
 O sistema utiliza a biblioteca LangChain para gerenciar a cadeia de processos, incluindo a recuperação de documentos e a geração de respostas.
@@ -35,5 +38,6 @@ O fluxo de trabalho do sistema é o seguinte:
 3. Os documentos recuperados são então passados para o modelo de linguagem GPT-4, que gera uma resposta baseada nessas informações.
 4. A resposta é então retornada ao usuário.
 
+## Informações adicionais
 O sistema também servira como um cadastrador de usuarios que informarao os dados da sua empresa para que futuramente possam ser utilizados na base de conhecimento.
 o casdastro é feito no endpoint /api/v1/register

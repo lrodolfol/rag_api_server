@@ -1,21 +1,30 @@
 import os
 import smtplib
 
-from flask import Flask, g
+from flask import Flask, g, request, jsonify
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 from handlers.ask_handler import AskMeHandler
 from api_manager.my_response import MyResponse
 from handlers.auth_handler import AuthHandler
 from handlers.file_source_handler import FileSourceHandler
 from email.message import EmailMessage
-
+from static.Settings import Settings
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:4200", "http://127.0.0.1:5500", "https://tinosnegocios.com.br"])
+redis_password = os.getenv("REDIS_PASSWORD", "")
+redis_host = Settings().redis
+
+rate_limit_storage = os.getenv(
+    "RATE_LIMIT_STORAGE_URI", f"redis://:{redis_password}@{redis_host['host']}:{redis_host['port']}"
+)
+limiter = Limiter(key_func=get_remote_address, storage_uri=rate_limit_storage)
+limiter.init_app(app)
 
 import jwt
-from flask import request, jsonify
 from functools import wraps
 
 def token_required(f):
@@ -58,6 +67,7 @@ def ask_me_chat_online():
 
 
 @app.route('/api/v1/askme-chat-online', methods=['POST'])
+@limiter.limit("2/minute")
 def ask_me():
     ask_me_handler = AskMeHandler()
     response: MyResponse = ask_me_handler.ask_me_handler_chat_online(request)
