@@ -10,7 +10,7 @@ from static.load_data_base import Load_Data_Base_Info
 
 DB_CONFIG = Load_Data_Base_Info()
 
-file_name: str = 'services.md'
+file_name: str = 'clients_services'
 def read_file() -> str:
     try:
         with open(f"./files_source/{file_name}", 'r', encoding='utf-8') as file:
@@ -25,7 +25,7 @@ class FileSourceHandler:
     def __init__(self, user_code: str):
         self.pinecone: PineCone = PineCone()
         self.open_ia: OpenIaService = OpenIaService()
-        self.file_path = './files_source/services.md'
+        self.file_path = './files_source/clients_services.md'
         self.file_updated_path = './files_source/file_updated.txt'
         self.logger = LoggerService("OpenIAService", "INFO")
         self.user_code = user_code
@@ -35,13 +35,15 @@ class FileSourceHandler:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
             if service.is_valid():
-                file_handler = IOFileHandler("./files_source")
-                content: str = f"# {service.service_name}\n"
-                content += f"{service.description}\n"
-                content += "---------\n\n"
+                file_handler = IOFileHandler("./files_source/clients_services")
+                content: str = f"# Nome: {service.service_name}\n"
+                content += f"## Dados: {service.description}\n"
+                content += "---------\n"
 
-                file_handler.write(self.user_code, content, overwrite=True)
+                file_handler.write(self.user_code, content, overwrite=True, encoding="utf-8", extension=".md")
+                file_handler.merge_directory_into_file("./files_source/clients_services", f"{file_name}")
 
+                self.save_file_source_on_pinecone()
                 self.update_user_code(self.user_code)
 
             return MyResponse(201, "Serviço salvo com sucesso.")

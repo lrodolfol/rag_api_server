@@ -32,6 +32,7 @@ class IOFileHandler:
         relative_path: str,
         content: str,
         encoding: str = "utf-8",
+        extension: str = ".md",
         overwrite: bool = True,
     ) -> None:
         resolved = self._resolve_path(relative_path)
@@ -40,7 +41,7 @@ class IOFileHandler:
             message = f"{relative_path} already exists."
             self.logger.error(message)
             raise FileExistsError(message)
-        with open(resolved, "w", encoding=encoding) as file:
+        with open(f"{resolved}{extension}", "w", encoding=encoding) as file:
             file.write(content)
 
     def merge_directory_into_file(
@@ -49,7 +50,7 @@ class IOFileHandler:
         output_file: str,
         encoding: str = "utf-8",
     ) -> None:
-        resolved_dir = self._resolve_path(directory_path)
+        resolved_dir = self._resolve_path("./")
         if not os.path.isdir(resolved_dir):
             self.logger.error(f"{directory_path} is not a directory.")
             raise NotADirectoryError(f"{directory_path} is not a directory.")
@@ -58,14 +59,16 @@ class IOFileHandler:
         for root, dirs, files in os.walk(resolved_dir):
             dirs.sort()
             for filename in sorted(files):
+                if filename.replace(".md","") == output_file:
+                    continue
+
                 file_path = os.path.join(root, filename)
                 if not os.path.isfile(file_path):
                     continue
                 contents.append(self.read(os.path.relpath(file_path, self.base_path), encoding=encoding))
 
         merged_content = "\n".join(contents)
-        self.write(output_file, merged_content, encoding=encoding, overwrite=True)
-
+        self.write(output_file, merged_content, encoding=encoding, extension=".md", overwrite=True)
 
     def delete(self, relative_path: str) -> bool:
         resolved = self._resolve_path(relative_path)
