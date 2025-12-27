@@ -1,3 +1,5 @@
+from datetime import timedelta, datetime
+
 import psycopg2
 from typing import Optional
 
@@ -76,3 +78,19 @@ class UserDAO:
             is_premium=is_premium,
             free_test=free_test
         )
+
+    def set_expired_users(self) -> int:
+        updated_rows = 0
+        fifteen_days_ago = datetime.now() - timedelta(days=15)
+
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""UPDATE ragweb.clients SET expired = %s, updated_at = now() WHERE code_used = %s and free_test = %s and is_premium = %s
+                 and created_at <= %s""",
+                    (True, True, True, True, fifteen_days_ago),
+                )
+                updated_rows = cursor.rowcount
+
+            connection.commit()
+
+        return updated_rows
