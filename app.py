@@ -1,3 +1,4 @@
+import atexit
 import os
 import smtplib
 
@@ -12,6 +13,8 @@ from handlers.auth_handler import AuthHandler
 from handlers.file_source_handler import FileSourceHandler
 from email.message import EmailMessage
 from static.Settings import Settings
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:4200", "http://127.0.0.1:5500", "https://tinosnegocios.com.br"])
@@ -23,6 +26,17 @@ rate_limit_storage = os.getenv(
 )
 limiter = Limiter(key_func=get_remote_address, storage_uri=rate_limit_storage)
 limiter.init_app(app)
+
+def print_daily_greeting() -> None:
+    print("ola mundo")
+
+scheduler: BackgroundScheduler = BackgroundScheduler()
+scheduler.add_job(
+    print_daily_greeting,
+    CronTrigger(hour=0, minute=0),
+)
+scheduler.start()
+atexit.register(lambda: scheduler.shutdown(wait=False))
 
 import jwt
 from functools import wraps
