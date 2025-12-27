@@ -1,5 +1,7 @@
 import psycopg2
+from typing import Optional
 
+from models.entitie.User import User
 from static.load_data_base import Load_Data_Base_Info
 
 DB_CONFIG = Load_Data_Base_Info()
@@ -42,3 +44,35 @@ class UserDAO:
                 )
                 row = cursor.fetchone()
                 return row[0] if row else 0
+
+    def find_by_code(self, code: str) -> Optional[User]:
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT *
+                    FROM ragweb.clients
+                    WHERE code = %s
+                    """,
+                    (code,),
+                )
+                row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        id, name, company, email, phone, code, code_used, created_at, updated_at, is_premium, free_test = row
+
+        return User(
+            id=id,
+            name=name,
+            company=company,
+            email=email,
+            phone=phone,
+            code=code,
+            code_used=code_used,
+            created_at=created_at,
+            updated_at=updated_at,
+            is_premium=is_premium,
+            free_test=free_test
+        )
