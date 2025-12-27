@@ -32,3 +32,13 @@ class UserDAO:
             connection.commit()
 
         return user_id
+
+    def find(self, code: str) -> int:
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT count(code) FROM ragweb.clients WHERE code = %s AND code_used = false",
+                    (code,),
+                )
+                row = cursor.fetchone()
+                return row[0] if row else 0

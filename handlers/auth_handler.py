@@ -1,20 +1,17 @@
 import datetime
 import os
 import jwt
-import psycopg2
 
 from api_manager.my_response import MyResponse
+from dao.user_dao import UserDAO
 from static.LogginService import LoggerService
-from static.Settings import Settings
-from static.load_data_base import Load_Data_Base_Info
-
-DB_CONFIG = Load_Data_Base_Info()
 
 
 class AuthHandler:
     def __init__(self):
         self.logger = LoggerService("AuthHandler", "INFO")
         self.secret_key = os.getenv("TOKEN_KEY")
+        self.user_dao = UserDAO()
 
     def auth(self, request):
         self.logger.info("AuthHandler: auth method called")
@@ -32,14 +29,12 @@ class AuthHandler:
         token: str = self.generate_token(code)
         return MyResponse(200, token)
 
-
     def validate_code(self, code) -> bool:
-        exist = self.find(code)
+        exist = self.user_dao.find(code)
         if exist <= 0:
             return False
 
         return True
-
 
     def generate_token(self, code: str) -> str:
         payload = {
@@ -57,18 +52,3 @@ class AuthHandler:
             token = token.decode("utf-8")
 
         return token
-
-
-    def find(cls, code) -> int:
-        with cls._connect() as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT count(code) FROM ragweb.clients WHERE code = %s AND code_used = false", (code,))
-                row = cur.fetchone()
-                if row:
-                    return row[0]
-
-                return 0
-
-
-    def _connect(self):
-        return psycopg2.connect(**DB_CONFIG)
