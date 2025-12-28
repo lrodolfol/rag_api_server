@@ -19,9 +19,14 @@ scheduler: BackgroundScheduler = BackgroundScheduler()
 scheduler.add_job(
     scheduler_cron.check_expired_user,
     #CronTrigger(hour=0, minute=0),
-    #CronTrigger(minute="*/1"),
-    CronTrigger(second="*/5"),
+    CronTrigger(minute="*/59"),
+    #CronTrigger(second="*/5"),
 )
+scheduler.add_job(
+   scheduler_cron.check_will_expired_user,
+   CronTrigger(hour="*/1"),
+)
+
 scheduler.start()
 atexit.register(lambda: scheduler.shutdown(wait=False))
 

@@ -79,18 +79,71 @@ class UserDAO:
             free_test=free_test
         )
 
-    def set_expired_users(self) -> int:
-        updated_rows = 0
-        fifteen_days_ago = datetime.now() - timedelta(days=15)
+    def get_will_expired_users(self) -> list[User]:
+        twelve_days_ago = (datetime.now() - timedelta(days=12)).strftime("%Y-%m-%d")
+        users: list[User] = []
 
         with psycopg2.connect(**DB_CONFIG) as connection:
             with connection.cursor() as cursor:
-                cursor.execute("""UPDATE ragweb.clients SET expired = %s, updated_at = now() WHERE code_used = %s and free_test = %s and is_premium = %s
-                 and created_at <= %s""",
-                    (True, True, True, True, fifteen_days_ago),
+                cursor.execute("""SELECT name, company, code, email FROM ragweb.clients WHERE code_used = %s and free_test = %s and is_premium = %s
+                 and date(created_at) = %s""",
+                    (True, True, True, twelve_days_ago),
                 )
-                updated_rows = cursor.rowcount
+                row = cursor.fetchall()
 
-            connection.commit()
+            for record in row:
+                name, company, email, code = record
+                user = User(
+                    id=2,
+                    name=name,
+                    company=company,
+                    email=email,
+                    phone='f',
+                    code=code
+                )
+                users.append(user)
 
-        return updated_rows
+        return users
+
+    def get_expired_users(self) -> list[User]:
+        fifteen_days_ago = (datetime.now() - timedelta(days=12)).strftime("%Y-%m-%d")
+        users: list[User] = []
+
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute("""SELECT name, company, code, email FROM ragweb.clients WHERE code_used = %s and free_test = %s and is_premium = %s
+                 and date(created_at) = %s""",
+                    (True, True, True, fifteen_days_ago),
+                )
+                row = cursor.fetchall()
+
+            for record in row:
+                name, company, email, code = record
+                user = User(
+                    id=2,
+                    name=name,
+                    company=company,
+                    email=email,
+                    phone='f',
+                    code=code
+                )
+                users.append(user)
+
+        return users
+
+    def set_expired_users(self) -> list[User]:
+        updated_rows = 0
+        fifteen_days_ago = datetime.now() - timedelta(days=15)
+
+        users_expired = self.get_expired_users()
+        if users_expired:
+            with psycopg2.connect(**DB_CONFIG) as connection:
+                with connection.cursor() as cursor:
+                    cursor.execute("""UPDATE ragweb.clients SET expired = %s, updated_at = now() WHERE code_used = %s and free_test = %s and is_premium = %s
+                     and created_at <= %s""",
+                        (True, True, True, True, fifteen_days_ago),
+                    )
+
+                connection.commit()
+
+        return users_expired

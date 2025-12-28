@@ -36,7 +36,7 @@ class FileSourceHandler:
                 file_handler = IOFileHandler("./files_source/clients_services")
                 content: str = f"# Nome: {service.service_name}\n"
                 content += f"## Dados: {service.description}\n"
-                content += "---------\n"
+                content += "\n---------\n"
 
                 file_handler.write(self.user_code, content, overwrite=True, encoding="utf-8", extension=".md")
                 file_handler.merge_directory_into_file("./files_source/clients_services", f"{file_name}")

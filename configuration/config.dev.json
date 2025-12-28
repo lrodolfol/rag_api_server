@@ -32,5 +32,14 @@
     "db": 0,
     "username": "default",
     "password": "get from environment"
+  },
+  "company": {
+    "name": "TI NOS NEGÓCIOS",
+    "email": "tinosnegocios1@gmail.com",
+    "ceo": {
+      "name": "Rodolfo de Jesus Silva,",
+      "person_email": "rodolfo0ti@gmail.com",
+      "professional_emai": ""
+    }
   }
 }

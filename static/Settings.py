@@ -18,6 +18,7 @@ class Settings:
             cls._instance._wati = data["wati"]
             cls._instance._database = data["database"]
             cls._instance._redis = data["redis"]
+            cls._instance._company = data["company"]
 
         return cls._instance
 
@@ -40,3 +41,7 @@ class Settings:
     @property
     def redis(self):
         return self._redis.copy()
+
+    @property
+    def company(self):
+        return self._company.copy()
