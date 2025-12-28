@@ -33,13 +33,13 @@ class FileSourceHandler:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
             if service.is_valid():
-                file_handler = IOFileHandler("./files_source/clients_services")
+                file_handler = IOFileHandler()
                 content: str = f"# Nome: {service.service_name}\n"
                 content += f"## Dados: {service.description}\n"
                 content += "\n---------\n"
 
-                file_handler.write(self.user_code, content, overwrite=True, encoding="utf-8", extension=".md")
-                file_handler.merge_directory_into_file("./files_source/clients_services", f"{file_name}")
+                file_handler.write('clients_services', self.user_code, content, overwrite=True, extension=".md")
+                file_handler.merge_directory_into_file("clients_services", f"{file_name}")
 
                 self.save_file_source_on_pinecone()
                 self.user_dao.update_user_code(self.user_code)

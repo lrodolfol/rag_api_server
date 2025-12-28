@@ -14,9 +14,9 @@ def check_expired_user() -> None:
     if users_updated:
         io_handler = IOFileHandler()
         for user in users_updated:
-            io_handler.delete(f'./{user.email}')
+            io_handler.delete('clients_services', f'{user.code}.md')
 
-        io_handler.merge_directory_into_file("./files_source/clients_services", "clients_services")
+        io_handler.merge_directory_into_file("clients_services", "clients_services")
 
 def check_will_expired_user() -> None:
     user_dao = UserDAO()
@@ -30,10 +30,10 @@ def check_will_expired_user() -> None:
 
         for user in users:
             message = f"""Olá {user.name},\n\nSeu período de teste gratuito de 14 dias para o SpotBot está prestes a expirar em 2 dias. 
-                Após esse período, os cliente não encontrarão o seu negócio como opção de consumo em nossa platadorma.\n\n
-                Para continuar aproveitando todos os benefícios do SpotBot, recomendamos que você adquira uma assinatura premium antes do término do seu período de teste.\n\n
-                Se tiver alguma dúvida ou precisar de assistência, não hesite em entrar em contato conosco.\n\n
-                Atenciosamente,\nEquipe {company['name']}"""
+                Após esse período, os cliente não encontrarão o seu negócio como opção de consumo em nossa platadorma.\n
+                Para continuar aproveitando todos os benefícios do SpotBot, recomendamos que você adquira uma assinatura premium antes do término do seu período de teste.\n
+                Se tiver alguma dúvida ou precisar de assistência, não hesite em entrar em contato conosco.\n
+                Atenciosamente,\n\nEquipe {company['name']}"""
             email_model = RagEmail(
                 from_=company['name'],
                 to=user.email,

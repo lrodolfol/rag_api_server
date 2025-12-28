@@ -92,14 +92,13 @@ class UserDAO:
                 row = cursor.fetchall()
 
             for record in row:
-                name, company, email, code = record
+                name, company, code, email = record
                 user = User(
                     id=2,
                     name=name,
                     company=company,
-                    email=email,
-                    phone='f',
-                    code=code
+                    code=code,
+                    email=email
                 )
                 users.append(user)
 
@@ -118,14 +117,12 @@ class UserDAO:
                 row = cursor.fetchall()
 
             for record in row:
-                name, company, email, code = record
+                name, company, code, email = record
                 user = User(
-                    id=2,
                     name=name,
                     company=company,
-                    email=email,
-                    phone='f',
-                    code=code
+                    code=code,
+                    email = email,
                 )
                 users.append(user)
 

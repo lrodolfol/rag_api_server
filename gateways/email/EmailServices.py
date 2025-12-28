@@ -16,5 +16,5 @@ class EmailService:
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             email_password: str = os.getenv("EMAIL_PASSWORD")
-            smtp.login(email_model.from_, email_password)
+            smtp.login(email_model.sender, email_password)
             smtp.send_message(email)
