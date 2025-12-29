@@ -1,6 +1,9 @@
 import hashlib
 import hmac
 import os
+from datetime import datetime, timezone
+from unittest.mock import right
+
 import psycopg2
 
 from api_manager.my_response import MyResponse
@@ -43,7 +46,9 @@ class Register:
             return MyResponse(400, "Dados invǭlidos")
 
     def generate_code_access(self, data) -> str:
-        dados = f"{data['user_name'].lower().strip()}|{data['company_name'].lower().strip()}|{data['email'].lower().strip()}|{data['phone'].strip()}"
+        agora_utc = datetime.now(timezone.utc)
+        dados = f"""{data['user_name'].lower().strip()}|{data['company_name'].lower().strip()}|
+                    {data['email'].lower().strip()}|{data['phone'].strip()}|{agora_utc}"""
         hmac_hash = hmac.new(self.key_code_access, dados.encode(), hashlib.sha256).hexdigest()
         code = hmac_hash[:8].upper()
 
