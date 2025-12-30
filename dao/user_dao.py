@@ -110,9 +110,9 @@ class UserDAO:
 
         with psycopg2.connect(**DB_CONFIG) as connection:
             with connection.cursor() as cursor:
-                cursor.execute("""SELECT name, company, code, email FROM ragweb.clients WHERE code_used = %s and free_test = %s and is_premium = %s
-                 and date(created_at) = %s""",
-                    (True, True, True, fifteen_days_ago),
+                cursor.execute("""SELECT name, company, code, email FROM ragweb.clients WHERE expired = %s, code_used = %s and free_test = %s and is_premium = %s
+                 and date(created_at) < %s""",
+                    (False, True, True, True, fifteen_days_ago),
                 )
                 row = cursor.fetchall()
 
