@@ -1,5 +1,8 @@
+import json
+
 from dao.user_dao import UserDAO
 from gateways.email.EmailServices import EmailService
+from gateways.pinecone.pine_cone import PineCone
 from handlers.io_file_handler import IOFileHandler
 from models.RagEmail import RagEmail
 from static.LogginService import LoggerService
@@ -17,6 +20,20 @@ def check_expired_user() -> None:
             io_handler.delete('clients_services', f'{user.code}.md')
 
         io_handler.merge_directory_into_file("clients_services", "clients_services")
+        file_content = io_handler.read('clients_services\\clients_services.md')
+
+        pinecone_service = PineCone()
+        pinecone_service.save(file_content)
+        json_users = [
+            {
+                "name": user.name,
+                "company": user.company,
+                "code": user.code
+            }
+            for user in users_updated
+        ]
+
+        logger.info(f"Users expired and services removed: {json.dumps(json_users, indent=2, ensure_ascii=False)}")
 
 def check_will_expired_user() -> None:
     user_dao = UserDAO()

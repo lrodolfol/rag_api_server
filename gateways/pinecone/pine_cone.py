@@ -3,6 +3,8 @@ import os
 from pinecone import Pinecone as Pinecone_lib, ServerlessSpec
 from static.LogginService import LoggerService
 from static.Settings import Settings
+from gateways.lang_chain.lang_chain import generate_chunks
+from gateways.open_ia.open_ia import OpenIaService
 
 
 class PineCone:
@@ -17,15 +19,18 @@ class PineCone:
         self.vector_type = settings.pinecone["vector_type"]
         self.dimension = settings.pinecone["dimension"]
         self.pinecone = Pinecone_lib(api_key=self.api_key)
+        self.open_ia = OpenIaService()
 
         self.logger = LoggerService("PineconeService", "INFO")
 
 
-    def save(self, embeddings) -> None:
+    def save(self, content: str) -> None:
         if self.has_invalid_properties():
             return
 
         try:
+            chunks = generate_chunks(content)
+            embeddings = self.open_ia.generate_embeddings_chunks(chunks)
             self.create_index_if_not_exists()
             index = self.pinecone.Index(self.index_name)
 
@@ -94,3 +99,4 @@ class PineCone:
             return True
 
         return False
+
