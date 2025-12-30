@@ -25,12 +25,11 @@ class FileSourceHandler:
                 file_handler = IOFileHandler()
                 content: str = f"# Nome: {service.service_name}\n"
                 content += f"## Dados: {description_sem_linhas_em_branco}\n"
-                content += "\n---------"
+                content += "---------"
 
-                file_handler.write('clients_services', self.user_code, content, overwrite=True, extension=".md")
+                file_handler.write('clients_services', self.user_code, content, overwrite=True, extension=".md",encoding='utf-8')
                 file_handler.merge_directory_into_file("clients_services", f"{file_name}")
-
-                self.pinecone.save(file_handler.read('clients_services\\clients_services.md'))
+                self.pinecone.save_user_content(content, self.user_code, request.json['title'])
                 self.user_dao.update_user_code(self.user_code)
 
             return MyResponse(201, "Serviço salvo com sucesso.")

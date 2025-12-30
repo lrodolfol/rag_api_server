@@ -39,7 +39,7 @@ class Register:
             return MyResponse(201, code)
         except psycopg2.IntegrityError as error:
             self.logger.error(f"Integrity error: {error}")
-            self.msg_error = "Empresa ou dados de cliente jǭ existente"
+            self.msg_error = "Empresa ou dados de cliente já existente"
             return MyResponse(500, f"Erro ao registrar usuǭrio. {self.msg_error}")
         except Exception as error:
             self.logger.error(f"Error registering client: {error}")

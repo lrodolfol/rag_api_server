@@ -38,6 +38,10 @@ class IOFileHandler:
             message = f"{relative_path} already exists."
             self.logger.error(message)
             raise FileExistsError(message)
+        invisiveis = ["\u200b", "\ufeff", "\u200e", "\u200f"]
+        for ch in invisiveis:
+            content = content.replace(ch, "")
+
         with open(f"{resolved}\\{file_name}{extension}", "w+") as file:
             file.write(content)
 

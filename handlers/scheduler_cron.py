@@ -16,14 +16,12 @@ def check_expired_user() -> None:
     users_updated = user_dao.set_expired_users()
     if users_updated:
         io_handler = IOFileHandler()
+        pinecone_service = PineCone()
         for user in users_updated:
             io_handler.delete('clients_services', f'{user.code}.md')
+            pinecone_service.delete_vectors_by_user(user.code)
 
         io_handler.merge_directory_into_file("clients_services", "clients_services")
-        file_content = io_handler.read('clients_services\\clients_services.md')
-
-        pinecone_service = PineCone()
-        pinecone_service.save(file_content)
         json_users = [
             {
                 "name": user.name,

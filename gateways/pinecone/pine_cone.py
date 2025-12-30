@@ -23,30 +23,61 @@ class PineCone:
 
         self.logger = LoggerService("PineconeService", "INFO")
 
-
-    def save(self, content: str) -> None:
+    def save_user_content(self, content: str, user_code: str, company: str = '') -> None:
         if self.has_invalid_properties():
+            return
+
+        if not user_code:
+            self.logger.error("User code is required to save data to Pinecone.")
             return
 
         try:
             chunks = generate_chunks(content)
+            if not chunks:
+                self.logger.info(f"No data to save for user {user_code}.")
+                return
+
             embeddings = self.open_ia.generate_embeddings_chunks(chunks)
+            if not embeddings:
+                self.logger.info(f"No embeddings generated for user {user_code}.")
+                return
+
+            self.delete_vectors_by_user(user_code)
             self.create_index_if_not_exists()
             index = self.pinecone.Index(self.index_name)
 
-            vector_insert = [(
-                    f"id-{i}",  # ID único
+            vector_insert = [
+                (
+                    f"{company.replace(' ','')}-{user_code}-{i}",
                     item["vector"],
-                    {"text": item["text"]}  # metadado
+                    {"text": item["text"], "user_code": user_code}
                 )
                 for i, item in enumerate(embeddings)
             ]
 
-            index.upsert(vector_insert)
-            self.logger.info("Data saved successfully with pinecone.")
+            if vector_insert:
+                index.upsert(vector_insert)
+                self.logger.info(f"Data saved successfully for user {user_code}.")
 
         except Exception as e:
-            self.logger.error(f"Error initializing Pinecone: {e}")
+            self.logger.error(f"Error saving user data to Pinecone: {e}")
+            return
+
+    def delete_vectors_by_user(self, user_code: str) -> None:
+        if self.has_invalid_properties():
+            return
+
+        if not user_code:
+            self.logger.error("User code is required to delete vectors.")
+            return
+
+        try:
+            self.create_index_if_not_exists()
+            index = self.pinecone.Index(self.index_name)
+            index.delete(filter={"user_code": user_code})
+            self.logger.info(f"Vectors deleted for user {user_code}.")
+        except Exception as e:
+            self.logger.error(f"Error deleting Pinecone vectors for user {user_code}: {e}")
             return
 
 
