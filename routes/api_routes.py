@@ -13,6 +13,7 @@ from handlers.ask_handler import AskMeHandler
 from handlers.auth_handler import AuthHandler
 from handlers.file_source_handler import FileSourceHandler
 from handlers.register import Register
+from handlers.password_recovery import PasswordRecoveryHandler
 
 api_blueprint = Blueprint("api", __name__)
 
@@ -121,3 +122,11 @@ def register():
     response: MyResponse = register_handler.register_user(request)
 
     return jsonify(response.to_dict()), response.code
+
+
+@api_blueprint.route("/api/v1/password-recovery", methods=["POST"])
+def recover_password():
+    recovery_handler = PasswordRecoveryHandler()
+    recovery_handler.recover_password(request)
+
+    return 200

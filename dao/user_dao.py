@@ -79,6 +79,57 @@ class UserDAO:
             free_test=free_test
         )
 
+    def find_by_email(self, email: str) -> Optional[User]:
+        normalized_email = email.strip().lower()
+
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT id, name, company, email, phone, code, code_used, created_at, updated_at, is_premium, free_test
+                    FROM ragweb.clients
+                    WHERE lower(email) = %s
+                    """,
+                    (normalized_email,),
+                )
+                row = cursor.fetchone()
+
+        if not row:
+            return None
+
+        id, name, company, email, phone, code, code_used, created_at, updated_at, is_premium, free_test = row
+
+        return User(
+            id=id,
+            name=name,
+            company=company,
+            email=email,
+            phone=phone,
+            code=code,
+            code_used=code_used,
+            created_at=created_at,
+            updated_at=updated_at,
+            is_premium=is_premium,
+            free_test=free_test
+        )
+
+    def update_code_by_email(self, email: str, new_code: str) -> None:
+        normalized_email = email.strip().lower()
+
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE ragweb.clients
+                    SET code = %s,
+                        code_used = %s,
+                        updated_at = now()
+                    WHERE lower(email) = %s
+                    """,
+                    (new_code, False, normalized_email),
+                )
+            connection.commit()
+
     def get_will_expired_users(self) -> list[User]:
         twelve_days_ago = (datetime.now() - timedelta(days=12)).strftime("%Y-%m-%d")
         users: list[User] = []
