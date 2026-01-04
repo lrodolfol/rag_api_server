@@ -18,3 +18,4 @@ class User:
     updated_at: Optional[datetime] = None
     is_premium: Optional[bool] = None
     free_test: Optional[bool] = None
+    expired: Optional[bool] = None

@@ -63,7 +63,7 @@ class UserDAO:
         if not row:
             return None
 
-        id, name, company, email, phone, code, code_used, created_at, updated_at, is_premium, free_test = row
+        id, name, company, email, phone, code, code_used, created_at, updated_at, is_premium, free_test, expired = row
 
         return User(
             id=id,
@@ -76,7 +76,8 @@ class UserDAO:
             created_at=created_at,
             updated_at=updated_at,
             is_premium=is_premium,
-            free_test=free_test
+            free_test=free_test,
+            expired=expired
         )
 
     def find_by_email(self, email: str) -> Optional[User]:
