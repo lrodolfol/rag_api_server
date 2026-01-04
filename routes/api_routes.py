@@ -12,7 +12,7 @@ from extensions import limiter
 from handlers.ask_handler import AskMeHandler
 from handlers.auth_handler import AuthHandler
 from handlers.file_source_handler import FileSourceHandler
-from handlers.register import Register
+from handlers.user_handler import UserHandler
 from handlers.password_recovery import PasswordRecoveryHandler
 
 api_blueprint = Blueprint("api", __name__)
@@ -118,7 +118,7 @@ def send_email():
 
 @api_blueprint.route("/api/v1/register", methods=["POST"])
 def register():
-    register_handler: Register = Register()
+    register_handler: UserHandler = UserHandler()
     response: MyResponse = register_handler.register_user(request)
 
     return jsonify(response.to_dict()), response.code
@@ -128,5 +128,15 @@ def register():
 def recover_password():
     recovery_handler = PasswordRecoveryHandler()
     recovery_handler.recover_password(request)
-
     return 200
+
+@api_blueprint.route("/api/v1/user", methods=["GET"])
+@token_required
+def get_user_data():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        return jsonify({"error": "Missing authorization header"}), 401
+
+    handler = UserHandler()
+    response: MyResponse = handler.get_user_by_code(g.user_code)
+    return jsonify(response.message), response.code
