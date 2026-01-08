@@ -20,11 +20,11 @@ class FileSourceHandler:
     def read_request_to_save(self, request) -> MyResponse:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
-            description_sem_linhas_em_branco = "\n".join(filter(str.strip, service.description.splitlines()))
+            description_without_line_blanks = "\n".join(filter(str.strip, service.description.splitlines()))
             if service.is_valid():
                 file_handler = IOFileHandler()
                 content: str = f"# Nome: {service.service_name}\n"
-                content += f"## Dados: {description_sem_linhas_em_branco}\n"
+                content += f"## Dados: {description_without_line_blanks}\n"
                 content += "---------"
 
                 file_handler.write('clients_services', self.user_code, content, overwrite=True, extension=".md",encoding='utf-8')

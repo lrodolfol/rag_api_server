@@ -44,7 +44,7 @@ class UserHandler:
             return MyResponse(500, f"Erro ao registrar usuǭrio. {self.msg_error}")
         except Exception as error:
             self.logger.error(f"Error registering client: {error}")
-            return MyResponse(400, "Dados invǭlidos")
+            return MyResponse(400, "Dados inválidos")
 
     def generate_code_access(self, data) -> str:
         agora_utc = datetime.now(timezone.utc)

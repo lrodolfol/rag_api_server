@@ -12,8 +12,10 @@ from extensions import limiter
 from handlers.ask_handler import AskMeHandler
 from handlers.auth_handler import AuthHandler
 from handlers.file_source_handler import FileSourceHandler
+from handlers.user_credit_card_handler import UserCreditCardHandler
 from handlers.user_handler import UserHandler
 from handlers.password_recovery import PasswordRecoveryHandler
+from models.entitie.UserCreditCard import UserCreditCard
 
 api_blueprint = Blueprint("api", __name__)
 
@@ -140,3 +142,18 @@ def get_user_data():
     handler = UserHandler()
     response: MyResponse = handler.get_user_by_code(g.user_code)
     return jsonify(response.message), response.code
+
+@api_blueprint.route("/api/v1/credit-card", methods=["POST"])
+@token_required
+def user_credit_card_register():
+    body = request.get_json()
+    card: UserCreditCard = UserCreditCard(
+            id=body.get("id"),
+            completed_name=body.get("completed_name", ""),
+            number=body.get("number"),
+            validity=body.get("validity", ""),
+            client_id=body.get("client_id"),
+        )
+
+    result: MyResponse = UserCreditCardHandler().register_user(card)
+    return jsonify(result.to_dict()), result.code
