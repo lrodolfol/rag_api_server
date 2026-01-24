@@ -21,6 +21,7 @@ class FileSourceHandler:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
             description_without_line_blanks = "\n".join(filter(str.strip, service.description.splitlines()))
+
             if service.is_valid():
                 file_handler = IOFileHandler()
                 content: str = f"# Nome: {service.service_name}\n"

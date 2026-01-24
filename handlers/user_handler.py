@@ -8,6 +8,7 @@ import psycopg2
 
 from api_manager.my_response import MyResponse
 from dao.user_dao import UserDAO
+from gateways.pinecone.pine_cone import PineCone
 from handlers.io_file_handler import IOFileHandler
 from static.LogginService import LoggerService
 
@@ -90,7 +91,16 @@ class UserHandler:
     def canceled_account(self, user_code) -> MyResponse:
         try:
             self.user_dao.delete_user_by_code(user_code)
+
+            io_handler = IOFileHandler()
+            io_handler.delete('clients_services', f'{user_code}.md')
+            io_handler.merge_directory_into_file("clients_services", "clients_services")
+
+            pinecone_service = PineCone()
+            pinecone_service.delete_vectors_by_user(user_code)
+
             return MyResponse(200, "Conta excluida com sucesso")
+
         except Exception as error:
             self.logger.error(f"Error canceling account for code {user_code}: {error}")
             return MyResponse(500, "Erro interno do servidor ao cancelar conta")
