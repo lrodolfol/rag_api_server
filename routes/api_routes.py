@@ -169,3 +169,8 @@ def user_cancelled_account():
     handler = UserHandler()
     response: MyResponse = handler.canceled_account(g.user_code)
     return jsonify(response.message), response.code
+
+@api_blueprint.route("/api/v1/validate-token", methods=["GET"])
+@token_required
+def user_validate_token():
+    return jsonify({"success": True}), 200
