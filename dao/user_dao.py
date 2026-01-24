@@ -196,3 +196,16 @@ class UserDAO:
                 connection.commit()
 
         return users_expired
+
+    def delete_user_by_code(self, code: str) -> None:
+        with psycopg2.connect(**DB_CONFIG) as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "DELETE FROM ragweb.credit_card WHERE client_id = (SELECT id FROM ragweb.clients WHERE code = %s)",
+                    (code,)
+                )
+                cursor.execute(
+                    "DELETE FROM ragweb.clients WHERE code = %s",
+                    (code,),
+                )
+            connection.commit()

@@ -88,4 +88,9 @@ class UserHandler:
             return MyResponse(500, "Erro interno do servidor")
 
     def canceled_account(self, user_code) -> MyResponse:
-        return MyResponse(200, "Funcionalidade em desenvolvimento")
+        try:
+            self.user_dao.delete_user_by_code(user_code)
+            return MyResponse(200, "Conta excluida com sucesso")
+        except Exception as error:
+            self.logger.error(f"Error canceling account for code {user_code}: {error}")
+            return MyResponse(500, "Erro interno do servidor ao cancelar conta")
