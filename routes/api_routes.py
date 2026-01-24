@@ -157,3 +157,15 @@ def user_credit_card_register():
 
     result: MyResponse = UserCreditCardHandler().register_user(card)
     return jsonify(result.to_dict()), result.code
+
+
+@api_blueprint.route("/api/v1/user-cancelled-account", methods=["POST"])
+@token_required
+def user_cancelled_account():
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
+        return jsonify({"error": "Missing authorization header"}), 401
+
+    handler = UserHandler()
+    response: MyResponse = handler.canceled_account(g.user_code)
+    return jsonify(response.message), response.code

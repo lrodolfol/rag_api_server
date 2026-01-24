@@ -86,3 +86,6 @@ class UserHandler:
         except Exception as error:
             self.logger.error(f"Error retrieving user by code: {error}")
             return MyResponse(500, "Erro interno do servidor")
+
+    def canceled_account(self, user_code) -> MyResponse:
+        return MyResponse(200, "Funcionalidade em desenvolvimento")

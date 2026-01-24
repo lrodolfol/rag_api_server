@@ -41,7 +41,7 @@ class UserDAO:
         with psycopg2.connect(**DB_CONFIG) as connection:
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT count(code) FROM ragweb.clients WHERE code = %s AND code_used = false",
+                    "SELECT count(code) FROM ragweb.clients WHERE code = %s",
                     (code,),
                 )
                 row = cursor.fetchone()
