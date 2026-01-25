@@ -9,7 +9,7 @@ class Settings:
     def __new__(cls):
         if cls._instance is None:
             environment = os.getenv("ENVIRONMENT", "dev").lower()
-            with open(f"configuration/config.{environment}.json") as file:
+            with open(f"configuration/config.{environment}.json", encoding="utf-8") as file:
                 data = json.load(file)
 
             cls._instance = super(Settings, cls).__new__(cls)
