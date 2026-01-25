@@ -13,6 +13,8 @@ class EmailService:
         email["Reply-To"] = email_model.sender
         email["Bcc"] = email_model.copy_to
         email.set_content(f"{email_model.message}")
+        if email_model.html_message:
+            email.add_alternative(email_model.html_message, subtype="html")
 
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
             email_password: str = os.getenv("EMAIL_PASSWORD")

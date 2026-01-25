@@ -79,3 +79,16 @@ class IOFileHandler:
             return False
         file_path.unlink()
         return True
+
+    def rename_file(self, relative_path: str, old_file_name: str, new_file_name: str) -> bool:
+        resolved_old = f"{self._resolve_path(relative_path)}\\{old_file_name}"
+        resolved_new = f"{self._resolve_path(relative_path)}\\{new_file_name}"
+
+        old_file_path = Path(resolved_old)
+        new_file_path = Path(resolved_new)
+
+        if not old_file_path.exists() or not old_file_path.is_file():
+            return False
+
+        old_file_path.rename(new_file_path)
+        return True
