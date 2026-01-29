@@ -49,11 +49,11 @@ def token_required(f):
 
 @api_blueprint.route("/api/v1/home")
 def hello_world():
-    return "It's works!"
+    return "It works!"
 
 
 @api_blueprint.route("/api/v1/askme", methods=["POST"])
-def ask_me_chat_online():
+def ask_me():
     ask_me_handler = AskMeHandler()
     response: MyResponse = ask_me_handler.ask_me_handler(request)
     return jsonify(response.to_dict()), response.code
@@ -61,7 +61,7 @@ def ask_me_chat_online():
 
 @api_blueprint.route("/api/v1/askme-chat-online", methods=["POST"])
 @limiter.limit("2/minute")
-def ask_me():
+def ask_me_chat_online():
     ask_me_handler = AskMeHandler()
     response: MyResponse = ask_me_handler.ask_me_handler_chat_online(request)
     return jsonify(response.to_dict()), response.code
