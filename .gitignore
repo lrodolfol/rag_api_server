@@ -1,10 +1,17 @@
+
+# Ambientes virtuais Python
 .venv/
+venv/
+VENV/
+ENV/
+env/
+
+# IDEs e configurações locais
 .idea/
 
 .env
 
 *.pyc
 
-logs/application.log
 
-logs/errors.log
+logs/

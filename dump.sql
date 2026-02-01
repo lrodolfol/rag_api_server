@@ -1,3 +1,6 @@
+CREATE SCHEMA IF NOT EXISTS ragweb;
+SET search_path TO ragweb;
+
 create sequence clients_id;
 
 alter sequence clients_id owner to postgres;
