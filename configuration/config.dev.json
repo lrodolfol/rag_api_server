@@ -45,8 +45,8 @@
   "bucket": {
     "name": "tnn-rag",
     "host": "http://localhost:5151",
-    "access_key": "sinqia",
-    "secret_key": "sinqia123",
+    "access_key": "get from environment",
+    "secret_key": "get from environment",
     "region": "us-east-1"
   }
 }
