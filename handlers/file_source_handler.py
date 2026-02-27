@@ -1,20 +1,22 @@
-from gateways.open_ia.open_ia import OpenIaService
+from gateways.bucket.BucketClient import BucketClient
 from gateways.pinecone.pine_cone import PineCone
 from api_manager.my_response import MyResponse
-from handlers.io_file_handler import IOFileHandler
 from models.Service import Service
 from static.LogginService import LoggerService
 from dao.user_dao import UserDAO
 
-file_name: str = 'clients_services'
 
 class FileSourceHandler:
     def __init__(self, user_code: str):
         self.pinecone: PineCone = PineCone()
-        self.open_ia: OpenIaService = OpenIaService()
         self.logger = LoggerService("OpenIAService", "INFO")
         self.user_code = user_code
         self.user_dao = UserDAO()
+
+
+    def delete_client_file(self) -> None:
+        bucket_client = BucketClient()
+        bucket_client.delete_file_client(self.user_code)
 
 
     def read_request_to_save(self, request) -> MyResponse:
@@ -23,13 +25,14 @@ class FileSourceHandler:
             description_without_line_blanks = "\n".join(filter(str.strip, service.description.splitlines()))
 
             if service.is_valid():
-                file_handler = IOFileHandler()
+                bucket_client = BucketClient()
                 content: str = f"# Nome: {service.service_name}\n"
                 content += f"## Dados: {description_without_line_blanks}\n"
                 content += "---------"
 
-                file_handler.write('clients_services', self.user_code, content, overwrite=True, extension=".md",encoding='utf-8')
-                file_handler.merge_directory_into_file("clients_services", f"{file_name}")
+                bucket_client.upload_string_client_file(content, self.user_code)
+                bucket_client.append_file_client(content)
+
                 self.pinecone.save_user_content(content, self.user_code, request.json['title'])
                 self.user_dao.update_user_code(self.user_code)
 

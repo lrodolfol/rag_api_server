@@ -9,6 +9,7 @@ import psycopg2
 from api_manager.my_response import MyResponse
 from dao.user_dao import UserDAO
 from gateways.pinecone.pine_cone import PineCone
+from handlers.file_source_handler import FileSourceHandler
 from handlers.io_file_handler import IOFileHandler
 from static.LogginService import LoggerService
 
@@ -92,9 +93,8 @@ class UserHandler:
         try:
             self.user_dao.delete_user_by_code(user_code)
 
-            io_handler = IOFileHandler()
-            io_handler.delete('clients_services', f'{user_code}.md')
-            io_handler.merge_directory_into_file("clients_services", "clients_services")
+            file_handler = FileSourceHandler(user_code)
+            file_handler.delete_client_file()
 
             pinecone_service = PineCone()
             pinecone_service.delete_vectors_by_user(user_code)
