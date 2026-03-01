@@ -75,8 +75,8 @@ class UserHandler:
                 "updated_at": user.updated_at.isoformat() if user.updated_at else None
             }
 
-            io_handler = IOFileHandler()
-            file_data = io_handler.read(f'clients_services/{user.code}.md')
+            file_handler = FileSourceHandler(code)
+            file_data = file_handler.read_client_file()
             description = ''
 
             if file_data:
@@ -85,6 +85,7 @@ class UserHandler:
 
             user_data["description"] = description.strip()
             return MyResponse(200, user_data)
+        
         except Exception as error:
             self.logger.error(f"Error retrieving user by code: {error}")
             return MyResponse(500, "Erro interno do servidor")

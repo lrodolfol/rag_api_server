@@ -42,3 +42,9 @@ class FileSourceHandler:
                 500,
                 "Erro ao processar a requisição.Verifique se os campos'title' e 'description' estão corretos."
             )
+
+
+    def read_client_file(self) -> str:
+        bucket_client = BucketClient()
+        return bucket_client.read_client_file(self.user_code)
+            
