@@ -1,16 +1,14 @@
 import hashlib
 import hmac
 import os
-import secrets
 from datetime import timezone, datetime
-from typing import Tuple
 
 from flask import Request
 
 from dao.user_dao import UserDAO
 from gateways.email.EmailServices import EmailService
 from gateways.pinecone.pine_cone import PineCone
-from handlers.io_file_handler import IOFileHandler
+from handlers.file_source_handler import FileSourceHandler
 from models.RagEmail import RagEmail
 from models.entitie.User import User
 from static.LogginService import LoggerService
@@ -42,7 +40,7 @@ class PasswordRecoveryHandler:
         self.user_dao = UserDAO()
         self.email_service = EmailService()
         self.setting = Settings()
-        self.io_file_handler = IOFileHandler()
+        self.file_handler = FileSourceHandler()
         self.pinecone = PineCone()
 
     def recover_password(self, request: Request) -> None:
@@ -56,15 +54,47 @@ class PasswordRecoveryHandler:
             new_code = generate_random_code(user)
             self.user_dao.update_code_by_email(email, new_code)
 
-            plain_message = f"""Olá {user.name},
-            
-            Seu novo código de acesso é: {new_code}
-            
-            Atenciosamente,
-            Equipe {self.setting.company['name']}"""
+            #self.send_email_password_recovery(user, new_code)
 
-            html_message = f"""<html>
-              <body style="font-family: Arial, sans-serif; color: #1b1b1b;">
+            if not user.expired:
+                self.update_user_files_and_vectors(user, new_code)
+
+            return None
+
+        except ValueError as error:
+            self.logger.warning(f"Password recovery failed due to invalid payload: {error}")
+            return {"error": str(error)}, 400
+        except Exception as error:
+            self.logger.error(f"Unexpected error during password recovery: {error}")
+            return {"error": "internal server error"}, 500
+
+
+    def update_user_files_and_vectors(self, user: User, new_code: str) -> None:
+        self.file_handler.rename_client_file(
+                f"{user.code}",
+                f"{new_code}"
+        )
+
+        content = self.file_handler.read_client_file(f"{new_code}")
+
+        self.pinecone.delete_vectors_by_user(user.code)
+        self.pinecone.save_user_content(
+                content,
+                new_code,
+                user.company
+        )        
+
+
+    def send_email_password_recovery(self, user: User, new_code: str) -> None:
+        plain_message = f"""Olá {user.name},
+            
+        Seu novo código de acesso é: {new_code}
+            
+        Atenciosamente,
+        Equipe {self.setting.company['name']}"""
+
+        html_message = f"""<html>
+            <body style="font-family: Arial, sans-serif; color: #1b1b1b;">
                 <p>Olá {user.name},</p>
                 <p>Solicitamos a geração de um novo código de acesso e ele já está pronto para ser utilizado.</p>
                 <p style="font-size: 1rem; margin-top: 1rem;">Seu novo código de acesso é:</p>
@@ -78,7 +108,7 @@ class PasswordRecoveryHandler:
               </body>
             </html>"""
 
-            rag_email: RagEmail = RagEmail(
+        rag_email: RagEmail = RagEmail(
                 from_=self.setting.company['name'],
                 to = user.email,
                 subject = 'SpotBot - Novo código de acesso disponível',
@@ -86,29 +116,5 @@ class PasswordRecoveryHandler:
                 copy_to = self.setting.company['ceo']['person_email'],
                 message = plain_message,
                 html_message = html_message
-            )
-            #self.email_service.send(rag_email)
-
-            self.io_file_handler.rename_file(
-                'clients_services',
-                f"{user.code}.md",
-                f"{new_code}.md"
-            )
-
-            content = self.io_file_handler.read(f'clients_services/{new_code}.md')
-
-            self.pinecone.delete_vectors_by_user(user.code)
-            self.pinecone.save_user_content(
-                content,
-                new_code,
-                user.company
-            )
-
-            return None
-
-        except ValueError as error:
-            self.logger.warning(f"Password recovery failed due to invalid payload: {error}")
-            return {"error": str(error)}, 400
-        except Exception as error:
-            self.logger.error(f"Unexpected error during password recovery: {error}")
-            return {"error": "internal server error"}, 500
+        )
+        self.email_service.send(rag_email)        

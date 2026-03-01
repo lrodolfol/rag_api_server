@@ -10,7 +10,6 @@ from api_manager.my_response import MyResponse
 from dao.user_dao import UserDAO
 from gateways.pinecone.pine_cone import PineCone
 from handlers.file_source_handler import FileSourceHandler
-from handlers.io_file_handler import IOFileHandler
 from static.LogginService import LoggerService
 
 

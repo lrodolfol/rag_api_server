@@ -18,6 +18,7 @@ class FileSourceHandler:
         bucket_client.delete_file_client(user_code)
 
 
+
     def read_request_to_save(self, user_code: str, request) -> MyResponse:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
@@ -47,3 +48,7 @@ class FileSourceHandler:
         bucket_client = BucketClient()
         return bucket_client.read_client_file(user_code)
             
+
+    def rename_client_file(self, old_user_code: str, new_user_code: str) -> None:
+        bucket_client = BucketClient()
+        bucket_client.rename_file_client(old_user_code, new_user_code)

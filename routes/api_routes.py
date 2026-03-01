@@ -130,7 +130,7 @@ def register():
 def recover_password():
     recovery_handler = PasswordRecoveryHandler()
     recovery_handler.recover_password(request)
-    return 200
+    return jsonify({"success": True}), 200
 
 @api_blueprint.route("/api/v1/user", methods=["GET"])
 @token_required

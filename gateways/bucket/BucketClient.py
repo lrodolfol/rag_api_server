@@ -83,3 +83,12 @@ class BucketClient:
             self.s3.delete_object(Bucket=self.name, Key=key)
         except ClientError as e:
             self.logger.error(f"Error deleting client file: {str(e)}")
+
+
+    def rename_file_client(self, old_key: str, new_key: str):
+        try:
+            copy_source = {'Bucket': self.name, 'Key': old_key}
+            self.s3.copy_object(CopySource=copy_source, Bucket=self.name, Key=new_key)
+            self.delete_file_client(old_key)
+        except ClientError as e:
+            self.logger.error(f"Error renaming client file: {str(e)}")
