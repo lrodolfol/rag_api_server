@@ -13,13 +13,11 @@ class BucketClient:
         self.logger = LoggerService("RequestClient", "INFO")
         settings: Settings = Settings()
 
-        self.host = settings.bucket("host")
-        self.access_key = os.getenv("CLOUD_SECRET_KEY")
-        self.secret_key = os.getenv("CLOUD_ACCESS_KEY")
-        self.name = settings.bucket("name")
-        self.region = settings.bucket("region")
-
-        self.create_bucket_if_not_exists()
+        self.host = settings.bucket["host"]
+        self.access_key = os.getenv("CLOUD_ACCESS_KEY")
+        self.secret_key = os.getenv("CLOUD_SECRET_KEY")
+        self.name = settings.bucket["name"]
+        self.region = settings.bucket["region"]
 
         self.s3 = boto3.client(
             "s3",
@@ -73,11 +71,11 @@ class BucketClient:
         pass
 
 
-    def append_file_client(self, file: str):
-        existing_content = self.read_client_file('client_services.md')
-        new_content = existing_content + file
+    # def append_file_client(self, file: str):
+    #     existing_content = self.read_client_file('client_services.md')
+    #     new_content = existing_content + file
 
-        self.upload_string_client_file(new_content, 'services')
+    #     self.upload_string_client_file(new_content, 'services')
 
 
     def delete_file_client(self, key: str):
