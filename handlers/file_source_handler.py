@@ -31,7 +31,6 @@ class FileSourceHandler:
                 content += "---------"
 
                 bucket_client.upload_string_client_file(content, self.user_code)
-                bucket_client.append_file_client(content)
 
                 self.pinecone.save_user_content(content, self.user_code, request.json['title'])
                 self.user_dao.update_user_code(self.user_code)
