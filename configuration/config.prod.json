@@ -40,5 +40,12 @@
       "person_email": "rodolfo0ti@gmail.com",
       "professional_emai": ""
     }
+  },
+  "bucket": {
+    "name": "tnn-rag",
+    "host": "http://localhost:5151",
+    "access_key": "get from environment",
+    "secret_key": "get from environment",
+    "region": "us-east-1"
   }
 }

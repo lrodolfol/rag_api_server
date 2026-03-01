@@ -74,8 +74,8 @@ def services():
     if not auth_header:
         return jsonify({"error": "Missing authorization header"}), 401
 
-    file_source_handler = FileSourceHandler(g.user_code)
-    response: MyResponse = file_source_handler.read_request_to_save(request)
+    file_source_handler = FileSourceHandler()
+    response: MyResponse = file_source_handler.read_request_to_save(g.user_code, request)
 
     return jsonify(response.to_dict()), response.code
 
@@ -130,7 +130,7 @@ def register():
 def recover_password():
     recovery_handler = PasswordRecoveryHandler()
     recovery_handler.recover_password(request)
-    return 200
+    return jsonify({"success": True}), 200
 
 @api_blueprint.route("/api/v1/user", methods=["GET"])
 @token_required

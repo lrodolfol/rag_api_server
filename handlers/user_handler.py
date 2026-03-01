@@ -9,7 +9,7 @@ import psycopg2
 from api_manager.my_response import MyResponse
 from dao.user_dao import UserDAO
 from gateways.pinecone.pine_cone import PineCone
-from handlers.io_file_handler import IOFileHandler
+from handlers.file_source_handler import FileSourceHandler
 from static.LogginService import LoggerService
 
 
@@ -62,6 +62,9 @@ class UserHandler:
             if not user:
                 return MyResponse(404, "Usuário não encontrado")
 
+            if(user.expired):
+                return MyResponse(403, "Período de teste expirado")
+
             user_data = {
                 "id": user.id,
                 "name": user.name,
@@ -71,11 +74,12 @@ class UserHandler:
                 "code": user.code,
                 "code_used": user.code_used,
                 "created_at": user.created_at.isoformat(),
-                "updated_at": user.updated_at.isoformat() if user.updated_at else None
+                "updated_at": user.updated_at.isoformat() if user.updated_at else None,
+                "expired": user.expired
             }
 
-            io_handler = IOFileHandler()
-            file_data = io_handler.read(f'clients_services/{user.code}.md')
+            file_handler = FileSourceHandler()
+            file_data = file_handler.read_client_file(code)
             description = ''
 
             if file_data:
@@ -84,6 +88,7 @@ class UserHandler:
 
             user_data["description"] = description.strip()
             return MyResponse(200, user_data)
+        
         except Exception as error:
             self.logger.error(f"Error retrieving user by code: {error}")
             return MyResponse(500, "Erro interno do servidor")
@@ -92,9 +97,8 @@ class UserHandler:
         try:
             self.user_dao.delete_user_by_code(user_code)
 
-            io_handler = IOFileHandler()
-            io_handler.delete('clients_services', f'{user_code}.md')
-            io_handler.merge_directory_into_file("clients_services", "clients_services")
+            file_handler = FileSourceHandler()
+            file_handler.delete_client_file(user_code)
 
             pinecone_service = PineCone()
             pinecone_service.delete_vectors_by_user(user_code)

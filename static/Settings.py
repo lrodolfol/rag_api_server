@@ -19,6 +19,7 @@ class Settings:
             cls._instance._database = data["database"]
             cls._instance._redis = data["redis"]
             cls._instance._company = data["company"]
+            cls._instance._bucket = data["bucket"]
 
         return cls._instance
 
@@ -45,3 +46,7 @@ class Settings:
     @property
     def company(self):
         return self._company.copy()
+
+    @property
+    def bucket(self):
+        return self._bucket.copy()
