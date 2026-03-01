@@ -7,19 +7,18 @@ from dao.user_dao import UserDAO
 
 
 class FileSourceHandler:
-    def __init__(self, user_code: str):
+    def __init__(self):
         self.pinecone: PineCone = PineCone()
         self.logger = LoggerService("OpenIAService", "INFO")
-        self.user_code = user_code
         self.user_dao = UserDAO()
 
 
-    def delete_client_file(self) -> None:
+    def delete_client_file(self, user_code: str) -> None:
         bucket_client = BucketClient()
-        bucket_client.delete_file_client(self.user_code)
+        bucket_client.delete_file_client(user_code)
 
 
-    def read_request_to_save(self, request) -> MyResponse:
+    def read_request_to_save(self, user_code: str, request) -> MyResponse:
         try:
             service: Service = Service(request.json['title'], request.json['description'])
             description_without_line_blanks = "\n".join(filter(str.strip, service.description.splitlines()))
@@ -30,10 +29,10 @@ class FileSourceHandler:
                 content += f"## Dados: {description_without_line_blanks}\n"
                 content += "---------"
 
-                bucket_client.upload_string_client_file(content, self.user_code)
+                bucket_client.upload_string_client_file(content, user_code)
 
-                self.pinecone.save_user_content(content, self.user_code, request.json['title'])
-                self.user_dao.update_user_code(self.user_code)
+                self.pinecone.save_user_content(content, user_code, request.json['title'])
+                self.user_dao.update_user_code(user_code)
 
             return MyResponse(201, "Serviço salvo com sucesso.")
         except Exception as e:
@@ -44,7 +43,7 @@ class FileSourceHandler:
             )
 
 
-    def read_client_file(self) -> str:
+    def read_client_file(self, user_code: str) -> str:
         bucket_client = BucketClient()
-        return bucket_client.read_client_file(self.user_code)
+        return bucket_client.read_client_file(user_code)
             

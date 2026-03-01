@@ -74,8 +74,8 @@ def services():
     if not auth_header:
         return jsonify({"error": "Missing authorization header"}), 401
 
-    file_source_handler = FileSourceHandler(g.user_code)
-    response: MyResponse = file_source_handler.read_request_to_save(request)
+    file_source_handler = FileSourceHandler()
+    response: MyResponse = file_source_handler.read_request_to_save(g.user_code, request)
 
     return jsonify(response.to_dict()), response.code
 

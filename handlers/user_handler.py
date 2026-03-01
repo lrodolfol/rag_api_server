@@ -63,6 +63,9 @@ class UserHandler:
             if not user:
                 return MyResponse(404, "Usuário não encontrado")
 
+            if(user.expired):
+                return MyResponse(403, "Período de teste expirado")
+
             user_data = {
                 "id": user.id,
                 "name": user.name,
@@ -72,11 +75,12 @@ class UserHandler:
                 "code": user.code,
                 "code_used": user.code_used,
                 "created_at": user.created_at.isoformat(),
-                "updated_at": user.updated_at.isoformat() if user.updated_at else None
+                "updated_at": user.updated_at.isoformat() if user.updated_at else None,
+                "expired": user.expired
             }
 
-            file_handler = FileSourceHandler(code)
-            file_data = file_handler.read_client_file()
+            file_handler = FileSourceHandler()
+            file_data = file_handler.read_client_file(code)
             description = ''
 
             if file_data:
@@ -94,8 +98,8 @@ class UserHandler:
         try:
             self.user_dao.delete_user_by_code(user_code)
 
-            file_handler = FileSourceHandler(user_code)
-            file_handler.delete_client_file()
+            file_handler = FileSourceHandler()
+            file_handler.delete_client_file(user_code)
 
             pinecone_service = PineCone()
             pinecone_service.delete_vectors_by_user(user_code)

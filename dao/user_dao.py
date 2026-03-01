@@ -19,6 +19,7 @@ class UserDAO:
                 )
             connection.commit()
 
+
     def add_user(self, data: dict[str, str], code: str) -> int:
         with psycopg2.connect(**DB_CONFIG) as connection:
             with connection.cursor() as cursor:
@@ -37,6 +38,7 @@ class UserDAO:
 
         return user_id
 
+
     def find(self, code: str) -> int:
         with psycopg2.connect(**DB_CONFIG) as connection:
             with connection.cursor() as cursor:
@@ -46,6 +48,7 @@ class UserDAO:
                 )
                 row = cursor.fetchone()
                 return row[0] if row else 0
+
 
     def find_by_code(self, code: str) -> Optional[User]:
         with psycopg2.connect(**DB_CONFIG) as connection:
@@ -79,6 +82,7 @@ class UserDAO:
             free_test=free_test,
             expired=expired
         )
+
 
     def find_by_email(self, email: str) -> Optional[User]:
         normalized_email = email.strip().lower()
@@ -114,6 +118,7 @@ class UserDAO:
             free_test=free_test
         )
 
+
     def update_code_by_email(self, email: str, new_code: str) -> None:
         normalized_email = email.strip().lower()
 
@@ -130,6 +135,7 @@ class UserDAO:
                     (new_code, False, normalized_email),
                 )
             connection.commit()
+
 
     def get_will_expired_users(self) -> list[User]:
         twelve_days_ago = (datetime.now() - timedelta(days=12)).strftime("%Y-%m-%d")
@@ -156,6 +162,7 @@ class UserDAO:
 
         return users
 
+
     def get_expired_users(self) -> list[User]:
         fifteen_days_ago = (datetime.now() - timedelta(days=12)).strftime("%Y-%m-%d")
         users: list[User] = []
@@ -180,6 +187,7 @@ class UserDAO:
 
         return users
 
+
     def set_expired_users(self) -> list[User]:
         updated_rows = 0
         fifteen_days_ago = datetime.now() - timedelta(days=15)
@@ -196,6 +204,7 @@ class UserDAO:
                 connection.commit()
 
         return users_expired
+
 
     def delete_user_by_code(self, code: str) -> None:
         with psycopg2.connect(**DB_CONFIG) as connection:
